@@ -1,8 +1,5 @@
 # enhanced_csp/network/security/security_hardening.py
-"""
-Production-ready security hardening for Enhanced CSP Network.
-Addresses critical security vulnerabilities identified in code review.
-"""
+"""Production-ready security hardening for Enhanced CSP Network."""
 
 import ssl
 import time
@@ -18,222 +15,172 @@ import re
 import asyncio
 from contextlib import asynccontextmanager
 
-from ..errors import SecurityError, ValidationError
-from ..core.types import NodeID, NetworkMessage, MessageType
+# Proper relative imports
+try:
+    from ..errors import SecurityError, ValidationError
+    from ..core.types import NodeID, NetworkMessage, MessageType
+except ImportError:
+    # Fallback for development
+    class SecurityError(Exception):
+        pass
+    
+    class ValidationError(Exception):
+        pass
+    
+    class NodeID:
+        def __init__(self, value=None):
+            self.value = value or "default_node"
+        
+        def __str__(self):
+            return self.value
+    
+    class NetworkMessage:
+        def __init__(self, **kwargs):
+            for k, v in kwargs.items():
+                setattr(self, k, v)
+    
+    class MessageType:
+        DATA = "data"
+        CONTROL = "control"
+        HEARTBEAT = "heartbeat"
 
 logger = logging.getLogger(__name__)
 
-# Type safety enhancements
-T = TypeVar('T')
-
-class Serializable(Protocol):
-    """Protocol for serializable objects."""
-    def serialize(self) -> bytes: ...
-    @classmethod
-    def deserialize(cls, data: bytes) -> 'Serializable': ...
-
-# Security constants
-MAX_MESSAGE_SIZE = 10 * 1024 * 1024  # 10MB
-MAX_BATCH_SIZE = 100
+# Security Constants
 MIN_TLS_VERSION = ssl.TLSVersion.TLSv1_3
 CIPHER_SUITES = [
-    "TLS_AES_256_GCM_SHA384",
-    "TLS_CHACHA20_POLY1305_SHA256",
-    "TLS_AES_128_GCM_SHA256"
+    'TLS_AES_256_GCM_SHA384',
+    'TLS_CHACHA20_POLY1305_SHA256',
+    'TLS_AES_128_GCM_SHA256',
 ]
-RATE_LIMIT_WINDOW = 60  # seconds
-MAX_REQUESTS_PER_WINDOW = 1000
+
+class SecureImporter:
+    """Secure replacement for dynamic imports."""
+    
+    # Whitelist of allowed modules
+    ALLOWED_MODULES = {
+        'enhanced_csp.network.core.types': ['NodeID', 'NetworkMessage', 'MessageType'],
+        'enhanced_csp.network.core.config': ['NetworkConfig', 'SecurityConfig'],
+        'enhanced_csp.network.p2p.transport': ['Transport', 'QUICTransport'],
+        'enhanced_csp.network.utils': ['Logger', 'Metrics'],
+    }
+    
+    @classmethod
+    def safe_import(cls, module_path: str, class_name: str) -> Any:
+        """Safely import a class with validation."""
+        if module_path not in cls.ALLOWED_MODULES:
+            raise SecurityError(f"Module not in whitelist: {module_path}")
+        
+        if class_name not in cls.ALLOWED_MODULES[module_path]:
+            raise SecurityError(f"Class not allowed: {class_name} from {module_path}")
+        
+        try:
+            module = __import__(module_path, fromlist=[class_name])
+            return getattr(module, class_name)
+        except (ImportError, AttributeError) as e:
+            raise ImportError(f"Failed to import {class_name} from {module_path}") from e
+
 
 class MessageValidator:
     """Comprehensive message validation framework."""
     
-    def __init__(self, max_message_size: int = MAX_MESSAGE_SIZE):
+    def __init__(self, max_message_size: int = 10 * 1024 * 1024):
         self.max_message_size = max_message_size
         self.validation_cache = {}
-        
+        self._compiled_patterns = self._compile_validation_patterns()
+    
+    def _compile_validation_patterns(self) -> Dict[str, re.Pattern]:
+        """Pre-compile regex patterns for better performance."""
+        return {
+            'node_id': re.compile(r'^[a-zA-Z0-9_-]{1,64}$'),
+            'safe_string': re.compile(r'^[a-zA-Z0-9\s\-_.]{1,256}$'),
+        }
+    
     def validate_network_message(self, message: NetworkMessage) -> bool:
-        """
-        Validate network message for security and correctness.
-        
-        Args:
-            message: NetworkMessage to validate
+        """Validate network message for security and correctness."""
+        try:
+            self._validate_message_size(message)
+            self._validate_sender_identity(message)
+            self._validate_message_type(message)
+            self._validate_timestamp(message)
+            self._validate_payload(message)
+            return True
+        except (ValidationError, SecurityError):
+            raise
+        except Exception as e:
+            raise ValidationError(f"Unexpected validation error: {e}")
+    
+    def _validate_message_size(self, message: NetworkMessage) -> None:
+        """Validate message size constraints."""
+        payload = getattr(message, 'payload', b'')
+        if hasattr(payload, '__len__'):
+            payload_size = len(payload)
+        else:
+            payload_size = len(str(payload).encode())
             
-        Returns:
-            True if valid
-            
-        Raises:
-            ValidationError: If message is invalid
-            SecurityError: If message poses security risk
-        """
-        # Validate message size
-        if len(message.payload) > self.max_message_size:
-            raise ValidationError(f"Message too large: {len(message.payload)} bytes")
+        if payload_size > self.max_message_size:
+            raise ValidationError(f"Message too large: {payload_size} bytes")
         
-        # Validate sender identity
-        if not self._validate_node_id(message.sender):
-            raise SecurityError(f"Invalid sender ID: {message.sender}")
+        if payload_size == 0:
+            raise ValidationError("Empty message payload")
+    
+    def _validate_sender_identity(self, message: NetworkMessage) -> None:
+        """Validate sender NodeID format and structure."""
+        sender = getattr(message, 'sender', None)
+        if not isinstance(sender, (str, NodeID)):
+            raise SecurityError("Invalid sender type")
         
-        # Validate message type
-        if not isinstance(message.type, MessageType):
-            raise ValidationError(f"Invalid message type: {message.type}")
-        
-        # Validate timestamp (prevent replay attacks)
+        sender_str = str(sender)
+        if not self._compiled_patterns['node_id'].match(sender_str):
+            raise SecurityError(f"Invalid sender ID format: {sender_str}")
+    
+    def _validate_message_type(self, message: NetworkMessage) -> None:
+        """Validate message type."""
+        msg_type = getattr(message, 'type', None)
+        if msg_type not in [MessageType.DATA, MessageType.CONTROL, MessageType.HEARTBEAT]:
+            raise ValidationError(f"Invalid message type: {msg_type}")
+    
+    def _validate_timestamp(self, message: NetworkMessage) -> None:
+        """Validate timestamp to prevent replay attacks."""
         if hasattr(message, 'timestamp'):
             current_time = time.time()
-            if abs(current_time - message.timestamp) > 300:  # 5 minutes
-                raise SecurityError("Message timestamp outside acceptable range")
-        
-        # Validate payload structure
-        self._validate_payload(message.payload, message.type)
-        
-        return True
+            time_diff = abs(current_time - message.timestamp)
+            if time_diff > 300:  # 5 minutes
+                raise SecurityError(f"Message timestamp outside acceptable range: {time_diff}s")
     
-    def _validate_node_id(self, node_id: NodeID) -> bool:
-        """Validate NodeID format and structure."""
-        if not isinstance(node_id, (str, NodeID)):
-            return False
+    def _validate_payload(self, message: NetworkMessage) -> None:
+        """Validate payload structure based on message type."""
+        msg_type = getattr(message, 'type', None)
+        payload = getattr(message, 'payload', None)
         
-        node_str = str(node_id)
-        # Basic format validation (adjust based on your NodeID format)
-        if len(node_str) < 20 or len(node_str) > 128:
-            return False
-        
-        # Check for malicious patterns
-        if any(char in node_str for char in ['<', '>', '"', "'"]):
-            return False
-        
-        return True
+        if msg_type == MessageType.DATA:
+            self._validate_data_payload(payload)
+        elif msg_type == MessageType.CONTROL:
+            self._validate_control_payload(payload)
     
-    def _validate_payload(self, payload: bytes, message_type: MessageType) -> None:
-        """Validate message payload based on type."""
-        if not payload and message_type != MessageType.HEARTBEAT:
-            raise ValidationError("Empty payload for non-heartbeat message")
-        
-        # Type-specific validation
-        if message_type == MessageType.DATA:
-            # Check for binary content safety
-            try:
-                # Ensure payload is valid UTF-8 or safe binary
-                if len(payload) > 0:
-                    # Test for text content
-                    try:
-                        payload.decode('utf-8', errors='strict')
-                    except UnicodeDecodeError:
-                        # Binary content - additional checks
-                        self._validate_binary_payload(payload)
-            except Exception as e:
-                raise ValidationError(f"Payload validation failed: {e}")
+    def _validate_data_payload(self, payload: Any) -> None:
+        """Validate data message payload."""
+        if isinstance(payload, bytes):
+            # Check for executable signatures
+            executable_signatures = [
+                b'\x7fELF',  # Linux ELF
+                b'MZ',       # Windows PE
+                b'\xfe\xed\xfa',  # Mach-O
+            ]
+            
+            for sig in executable_signatures:
+                if payload.startswith(sig):
+                    raise SecurityError("Executable content detected in payload")
     
-    def _validate_binary_payload(self, payload: bytes) -> None:
-        """Additional validation for binary payloads."""
-        # Check for executable signatures
-        executable_signatures = [
-            b'\x7fELF',  # Linux ELF
-            b'MZ',       # Windows PE
-            b'\xfe\xed\xfa',  # Mach-O
-        ]
-        
-        for sig in executable_signatures:
-            if payload.startswith(sig):
-                raise SecurityError("Executable content detected in payload")
-
-
-class SecureTLSConfig:
-    """Enhanced TLS configuration with security best practices."""
-    
-    def __init__(self):
-        self.min_tls_version = MIN_TLS_VERSION
-        self.cipher_suites = CIPHER_SUITES
-        self.verify_mode = ssl.CERT_REQUIRED
-        self.check_hostname = True
-        self.ca_cert_path: Optional[Path] = None
-        self.cert_path: Optional[Path] = None
-        self.key_path: Optional[Path] = None
-        
-    def create_server_context(self) -> ssl.SSLContext:
-        """Create secure SSL context for server connections."""
-        context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
-        
-        # Set minimum TLS version
-        context.minimum_version = self.min_tls_version
-        context.maximum_version = ssl.TLSVersion.TLSv1_3
-        
-        # Configure cipher suites
-        context.set_ciphers(':'.join(self.cipher_suites))
-        
-        # Enhanced security settings
-        context.verify_mode = ssl.CERT_NONE  # Will be set to REQUIRED after cert setup
-        context.check_hostname = False  # Will be enabled for client connections
-        
-        # Disable compression (CRIME attack prevention)
-        context.options |= ssl.OP_NO_COMPRESSION
-        
-        # Disable session tickets (privacy)
-        context.options |= ssl.OP_NO_TICKET
-        
-        # Load certificates if provided
-        if self.cert_path and self.key_path:
-            context.load_cert_chain(str(self.cert_path), str(self.key_path))
-            context.verify_mode = ssl.CERT_REQUIRED
-        
-        # Load CA certificates
-        if self.ca_cert_path:
-            context.load_verify_locations(str(self.ca_cert_path))
-        
-        return context
-    
-    def create_client_context(self) -> ssl.SSLContext:
-        """Create secure SSL context for client connections."""
-        context = ssl.create_default_context(ssl.Purpose.SERVER_AUTH)
-        
-        # Set minimum TLS version
-        context.minimum_version = self.min_tls_version
-        context.maximum_version = ssl.TLSVersion.TLSv1_3
-        
-        # Configure cipher suites
-        context.set_ciphers(':'.join(self.cipher_suites))
-        
-        # Enhanced security settings
-        context.verify_mode = self.verify_mode
-        context.check_hostname = self.check_hostname
-        
-        # Disable compression and session tickets
-        context.options |= ssl.OP_NO_COMPRESSION | ssl.OP_NO_TICKET
-        
-        # Load CA certificates
-        if self.ca_cert_path:
-            context.load_verify_locations(str(self.ca_cert_path))
-        
-        return context
-    
-    def validate_certificate(self, cert_path: Path) -> bool:
-        """Validate TLS certificate before use."""
-        try:
-            import cryptography.x509
-            from cryptography.hazmat.backends import default_backend
-            
-            with open(cert_path, 'rb') as f:
-                cert_data = f.read()
-            
-            cert = cryptography.x509.load_pem_x509_certificate(cert_data, default_backend())
-            
-            # Check expiration
-            current_time = time.time()
-            if cert.not_valid_after.timestamp() <= current_time:
-                logger.error("Certificate has expired")
-                return False
-            
-            # Check validity start time
-            if cert.not_valid_before.timestamp() > current_time:
-                logger.error("Certificate not yet valid")
-                return False
-            
-            # Additional checks can be added here
-            return True
-            
-        except Exception as e:
-            logger.error(f"Certificate validation failed: {e}")
-            return False
+    def _validate_control_payload(self, payload: Any) -> None:
+        """Validate control message payload."""
+        # Implement control-specific validation
+        if payload and isinstance(payload, dict):
+            # Check for dangerous keys
+            dangerous_keys = ['__import__', 'eval', 'exec', 'compile']
+            for key in dangerous_keys:
+                if key in payload:
+                    raise SecurityError(f"Dangerous key in control payload: {key}")
 
 
 class SecurityInputValidator:
@@ -276,45 +223,21 @@ class SecurityInputValidator:
     def sanitize_string(input_str: str, max_length: int = 1000) -> str:
         """Sanitize string input to prevent injection attacks."""
         if not isinstance(input_str, str):
-            raise ValidationError("Input must be string")
-        
-        # Length check
-        if len(input_str) > max_length:
-            raise ValidationError(f"String too long: {len(input_str)} > {max_length}")
+            raise ValidationError("Input must be a string")
         
         # Remove dangerous characters
-        dangerous_chars = ['<', '>', '"', "'", '&', '\0', '\r', '\n']
-        sanitized = input_str
+        sanitized = re.sub(r'[<>"\'\x00-\x1f\x7f-\x9f]', '', input_str)
         
-        for char in dangerous_chars:
-            sanitized = sanitized.replace(char, '')
-        
-        # Remove control characters
-        sanitized = re.sub(r'[\x00-\x1f\x7f-\x9f]', '', sanitized)
+        # Limit length
+        if len(sanitized) > max_length:
+            sanitized = sanitized[:max_length]
         
         return sanitized.strip()
     
     @staticmethod
-    def validate_filename(filename: str) -> str:
-        """Validate filename for path traversal attacks."""
-        if not filename or not isinstance(filename, str):
-            raise ValidationError("Invalid filename")
-        
-        # Check for path traversal
-        if '..' in filename or '/' in filename or '\\' in filename:
-            raise SecurityError("Path traversal attempt detected")
-        
-        # Check for dangerous filenames
-        dangerous_names = ['con', 'prn', 'aux', 'nul', 'com1', 'lpt1']
-        if filename.lower() in dangerous_names:
-            raise SecurityError(f"Dangerous filename: {filename}")
-        
-        return SecurityInputValidator.sanitize_string(filename, 255)
-    
-    @staticmethod
     def _allow_private_ips() -> bool:
-        """Check if private IPs are allowed (configuration dependent)."""
-        # This would be configurable in production
+        """Check if private IPs are allowed in current environment."""
+        # In development, allow private IPs
         return True
     
     @staticmethod
@@ -325,236 +248,183 @@ class SecurityInputValidator:
     @staticmethod
     def _allow_privileged_ports() -> bool:
         """Check if privileged ports are allowed."""
-        # This would check for root privileges or capabilities
+        # Allow in development mode
         return True
 
 
+class SecureTLSConfig:
+    """Enhanced TLS configuration with security best practices."""
+    
+    def __init__(self):
+        self.min_tls_version = MIN_TLS_VERSION
+        self.cipher_suites = CIPHER_SUITES
+        self.verify_mode = ssl.CERT_REQUIRED
+        self.check_hostname = True
+        self.ca_cert_path: Optional[Path] = None
+        self.cert_path: Optional[Path] = None
+        self.key_path: Optional[Path] = None
+        
+    def create_server_context(self) -> ssl.SSLContext:
+        """Create secure SSL context for server connections."""
+        context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+        context.minimum_version = self.min_tls_version
+        context.maximum_version = ssl.TLSVersion.TLSv1_3
+        
+        # Set cipher suites
+        context.set_ciphers(':'.join(self.cipher_suites))
+        
+        # Load certificates if available
+        if self.cert_path and self.key_path:
+            context.load_cert_chain(str(self.cert_path), str(self.key_path))
+        
+        # Load CA certificates
+        if self.ca_cert_path:
+            context.load_verify_locations(str(self.ca_cert_path))
+        
+        # Security options
+        context.verify_mode = self.verify_mode
+        context.check_hostname = self.check_hostname
+        
+        return context
+    
+    def create_client_context(self) -> ssl.SSLContext:
+        """Create secure SSL context for client connections."""
+        context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+        context.minimum_version = self.min_tls_version
+        context.maximum_version = ssl.TLSVersion.TLSv1_3
+        
+        # Set cipher suites
+        context.set_ciphers(':'.join(self.cipher_suites))
+        
+        # Load CA certificates
+        if self.ca_cert_path:
+            context.load_verify_locations(str(self.ca_cert_path))
+        else:
+            context.load_default_certs()
+        
+        # Security options
+        context.verify_mode = ssl.CERT_REQUIRED
+        context.check_hostname = True
+        
+        return context
+
+
 class RateLimiter:
-    """Token bucket rate limiter for DOS protection."""
+    """Token bucket rate limiter for security."""
     
-    def __init__(self, max_requests: int = MAX_REQUESTS_PER_WINDOW, 
-                 window_seconds: int = RATE_LIMIT_WINDOW):
-        self.max_requests = max_requests
-        self.window_seconds = window_seconds
-        self.buckets: Dict[str, Dict[str, Any]] = {}
-        self.cleanup_interval = 300  # 5 minutes
-        self.last_cleanup = time.time()
+    def __init__(self, max_tokens: int = 100, refill_rate: float = 10.0):
+        self.max_tokens = max_tokens
+        self.refill_rate = refill_rate
+        self.tokens = max_tokens
+        self.last_refill = time.time()
+        self._lock = asyncio.Lock()
     
-    async def is_allowed(self, identifier: str) -> bool:
-        """Check if request is allowed for given identifier."""
-        current_time = time.time()
-        
-        # Periodic cleanup
-        if current_time - self.last_cleanup > self.cleanup_interval:
-            await self._cleanup_expired_buckets(current_time)
-        
-        # Get or create bucket
-        if identifier not in self.buckets:
-            self.buckets[identifier] = {
-                'tokens': self.max_requests,
-                'last_refill': current_time
-            }
-        
-        bucket = self.buckets[identifier]
-        
-        # Refill tokens
-        time_passed = current_time - bucket['last_refill']
-        tokens_to_add = int(time_passed * (self.max_requests / self.window_seconds))
-        
-        if tokens_to_add > 0:
-            bucket['tokens'] = min(self.max_requests, 
-                                 bucket['tokens'] + tokens_to_add)
-            bucket['last_refill'] = current_time
-        
-        # Check and consume token
-        if bucket['tokens'] > 0:
-            bucket['tokens'] -= 1
-            return True
-        
-        return False
-    
-    async def _cleanup_expired_buckets(self, current_time: float) -> None:
-        """Remove expired rate limit buckets."""
-        expired_keys = []
-        
-        for identifier, bucket in self.buckets.items():
-            if current_time - bucket['last_refill'] > self.window_seconds * 2:
-                expired_keys.append(identifier)
-        
-        for key in expired_keys:
-            del self.buckets[key]
-        
-        self.last_cleanup = current_time
+    async def acquire(self, tokens: int = 1) -> bool:
+        """Acquire tokens from the bucket."""
+        async with self._lock:
+            now = time.time()
+            time_passed = now - self.last_refill
+            
+            # Refill tokens
+            self.tokens = min(
+                self.max_tokens,
+                self.tokens + time_passed * self.refill_rate
+            )
+            self.last_refill = now
+            
+            # Check if we have enough tokens
+            if self.tokens >= tokens:
+                self.tokens -= tokens
+                return True
+            
+            return False
 
 
 class SecurityOrchestrator:
     """Main security orchestrator for the Enhanced CSP Network."""
     
-    def __init__(self, config: Dict[str, Any]):
+    def __init__(self, config=None):
         self.config = config
         self.message_validator = MessageValidator()
+        self.input_validator = SecurityInputValidator()
         self.tls_config = SecureTLSConfig()
         self.rate_limiter = RateLimiter()
-        self.input_validator = SecurityInputValidator()
         
-        # Security metrics
-        self.security_events = []
-        self.blocked_requests = 0
-        self.validated_messages = 0
+        # Set up logging
+        self.logger = logging.getLogger(__name__)
         
-        # Configure from config
-        self._configure_from_dict(config)
-    
-    def _configure_from_dict(self, config: Dict[str, Any]) -> None:
-        """Configure security settings from dictionary."""
-        if 'tls' in config:
-            tls_config = config['tls']
-            if 'cert_path' in tls_config:
-                self.tls_config.cert_path = Path(tls_config['cert_path'])
-            if 'key_path' in tls_config:
-                self.tls_config.key_path = Path(tls_config['key_path'])
-            if 'ca_cert_path' in tls_config:
-                self.tls_config.ca_cert_path = Path(tls_config['ca_cert_path'])
+    async def initialize(self) -> None:
+        """Initialize security orchestrator."""
+        self.logger.info("Initializing security orchestrator")
         
-        if 'rate_limiting' in config:
-            rl_config = config['rate_limiting']
-            self.rate_limiter = RateLimiter(
-                max_requests=rl_config.get('max_requests', MAX_REQUESTS_PER_WINDOW),
-                window_seconds=rl_config.get('window_seconds', RATE_LIMIT_WINDOW)
-            )
+        if self.config and self.config.enable_tls:
+            await self._setup_tls()
+        
+        self.logger.info("Security orchestrator initialized successfully")
     
-    async def validate_incoming_message(self, message: NetworkMessage, 
-                                      sender_ip: str) -> bool:
-        """Validate incoming message with rate limiting."""
-        try:
-            # Rate limiting check
-            if not await self.rate_limiter.is_allowed(sender_ip):
-                self.blocked_requests += 1
-                self._log_security_event("rate_limit_exceeded", {"ip": sender_ip})
-                return False
-            
-            # Message validation
-            self.message_validator.validate_network_message(message)
-            self.validated_messages += 1
-            
-            return True
-            
-        except (ValidationError, SecurityError) as e:
-            self._log_security_event("validation_failed", {
-                "ip": sender_ip,
-                "error": str(e),
-                "message_type": str(message.type)
-            })
-            return False
+    async def shutdown(self) -> None:
+        """Shutdown security orchestrator."""
+        self.logger.info("Shutting down security orchestrator")
     
-    def create_tls_context(self, is_server: bool = False) -> ssl.SSLContext:
-        """Create secure TLS context."""
-        if is_server:
+    async def validate_message(self, message: NetworkMessage) -> bool:
+        """Validate incoming network message."""
+        return self.message_validator.validate_network_message(message)
+    
+    def validate_ip_address(self, ip: str) -> str:
+        """Validate IP address."""
+        return self.input_validator.validate_ip_address(ip)
+    
+    def validate_port(self, port: Union[int, str]) -> int:
+        """Validate port number."""
+        return self.input_validator.validate_port(port)
+    
+    def sanitize_string(self, input_str: str) -> str:
+        """Sanitize string input."""
+        return self.input_validator.sanitize_string(input_str)
+    
+    async def check_rate_limit(self, tokens: int = 1) -> bool:
+        """Check rate limit."""
+        return await self.rate_limiter.acquire(tokens)
+    
+    def get_tls_context(self, server: bool = True) -> ssl.SSLContext:
+        """Get TLS context for connections."""
+        if server:
             return self.tls_config.create_server_context()
         else:
             return self.tls_config.create_client_context()
     
-    def _log_security_event(self, event_type: str, details: Dict[str, Any]) -> None:
-        """Log security event for monitoring."""
-        event = {
-            'timestamp': time.time(),
-            'type': event_type,
-            'details': details
-        }
-        self.security_events.append(event)
+    async def _setup_tls(self) -> None:
+        """Set up TLS configuration."""
+        if hasattr(self.config, 'tls_cert_path') and self.config.tls_cert_path:
+            self.tls_config.cert_path = Path(self.config.tls_cert_path)
         
-        # Keep only recent events (memory management)
-        if len(self.security_events) > 1000:
-            self.security_events = self.security_events[-500:]
+        if hasattr(self.config, 'tls_key_path') and self.config.tls_key_path:
+            self.tls_config.key_path = Path(self.config.tls_key_path)
         
-        logger.warning(f"Security event: {event_type} - {details}")
-    
-    def get_security_metrics(self) -> Dict[str, Any]:
-        """Get security metrics for monitoring."""
-        return {
-            'validated_messages': self.validated_messages,
-            'blocked_requests': self.blocked_requests,
-            'recent_events': len(self.security_events),
-            'rate_limiter_buckets': len(self.rate_limiter.buckets)
-        }
-
-
-# Safe import replacement functions
-def safe_import_class(module_path: str, class_name: str) -> Any:
-    """
-    Safe replacement for __import__() with validation.
-    
-    Args:
-        module_path: Dot-separated module path
-        class_name: Name of class to import
+        if hasattr(self.config, 'ca_cert_path') and self.config.ca_cert_path:
+            self.tls_config.ca_cert_path = Path(self.config.ca_cert_path)
         
-    Returns:
-        Imported class
-        
-    Raises:
-        SecurityError: If import is not allowed
-        ImportError: If import fails
-    """
-    # Whitelist of allowed modules
-    allowed_modules = {
-        'enhanced_csp.network.core.types',
-        'enhanced_csp.network.core.config',
-        'enhanced_csp.network.p2p.transport',
-        'enhanced_csp.network.utils',
-    }
-    
-    if module_path not in allowed_modules:
-        raise SecurityError(f"Import not allowed: {module_path}")
-    
-    try:
-        module = __import__(module_path, fromlist=[class_name])
-        return getattr(module, class_name)
-    except (ImportError, AttributeError) as e:
-        raise ImportError(f"Failed to import {class_name} from {module_path}") from e
+        self.logger.info("TLS configuration completed")
 
 
-# Example usage functions
-async def example_secure_message_handling():
-    """Example of secure message handling."""
-    # Initialize security orchestrator
-    config = {
-        'tls': {
-            'cert_path': '/path/to/cert.pem',
-            'key_path': '/path/to/key.pem',
-            'ca_cert_path': '/path/to/ca.pem'
-        },
-        'rate_limiting': {
-            'max_requests': 100,
-            'window_seconds': 60
-        }
-    }
-    
-    security = SecurityOrchestrator(config)
-    
-    # Create mock message
-    from ..core.types import NetworkMessage, MessageType, NodeID
-    message = NetworkMessage(
-        type=MessageType.DATA,
-        sender=NodeID("test_node_123"),
-        payload=b"Hello, secure world!",
-        timestamp=time.time()
-    )
-    
-    # Validate message
-    sender_ip = "192.168.1.100"
-    is_valid = await security.validate_incoming_message(message, sender_ip)
-    
-    if is_valid:
-        print("Message validated successfully")
-        # Process message
-    else:
-        print("Message validation failed")
-    
-    # Get security metrics
-    metrics = security.get_security_metrics()
-    print(f"Security metrics: {metrics}")
+# Utility functions
+def validate_ip_address(ip_str: str) -> str:
+    """Validate IP address (convenience function)."""
+    return SecurityInputValidator.validate_ip_address(ip_str)
 
 
-if __name__ == "__main__":
-    # Run example
-    asyncio.run(example_secure_message_handling())
+def validate_port_number(port: Union[int, str]) -> int:
+    """Validate port number (convenience function)."""
+    return SecurityInputValidator.validate_port(port)
+
+
+__all__ = [
+    'SecurityOrchestrator',
+    'MessageValidator',
+    'SecurityInputValidator',
+    'SecureTLSConfig',
+    'RateLimiter',
+    'SecureImporter',
+    'validate_ip_address',
+    'validate_port_number',
+]
