@@ -59,7 +59,7 @@ except ImportError:
         NetworkConfig, SecurityConfig, P2PConfig, MeshConfig, 
         DNSConfig, RoutingConfig
     )
-    from core.types import (
+    from enhanced_csp.network.core.types import (
         NodeID, NodeCapabilities, PeerInfo, NetworkMessage, MessageType
     )
     sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -965,21 +965,14 @@ class NodeManager:
     
     def _build_config(self) -> NetworkConfig:
         """Build network configuration from command line arguments."""
-        # Build security config
+        # Build security config - ONLY use parameters that exist in SecurityConfig
         security = SecurityConfig(
             enable_tls=not self.args.no_tls,
             enable_mtls=self.args.mtls,
-            enable_pq_crypto=self.args.pq_crypto,
-            enable_zero_trust=self.args.zero_trust,
-            tls_cert_path=self.args.tls_cert,
-            tls_key_path=self.args.tls_key,
-            ca_cert_path=self.args.ca_cert,
-            audit_log_path=Path(self.args.audit_log) if self.args.audit_log else None,
-            enable_threat_detection=not self.args.no_threat_detection,
-            enable_intrusion_prevention=self.args.ips,
-            enable_compliance_mode=self.args.compliance,
-            compliance_standards=self.args.compliance_standards.split(',') if self.args.compliance_standards else [],
-            tls_rotation_interval=self.args.tls_rotation_days * 86400,
+            tls_version="1.3",
+            tls_cert_path=Path(self.args.tls_cert) if self.args.tls_cert else None,
+            tls_key_path=Path(self.args.tls_key) if self.args.tls_key else None,
+            ca_cert_path=Path(self.args.ca_cert) if self.args.ca_cert else None,
         )
         
         # Build P2P config
@@ -1008,35 +1001,59 @@ class NodeManager:
             enable_qos=self.args.qos,
         )
         
-        # Build main network config
+        # Create NodeCapabilities
+        try:
+            from enhanced_csp.network.core.types import NodeCapabilities
+        except ImportError:
+            from core.types import NodeCapabilities
+        
+        capabilities = NodeCapabilities(
+            relay=True,
+            storage=self.args.enable_storage,
+            compute=self.args.enable_compute,
+            quantum=self.args.enable_quantum,
+            blockchain=self.args.enable_blockchain,
+            dns=self.args.enable_dns or self.args.genesis,
+            bootstrap=self.args.genesis,
+        )
+        
+        # Build main network config using the dataclass parameters
         config = NetworkConfig(
-            # Core network settings
-            network_id=self.args.network_id,
-            listen_address=self.args.listen_address,
-            listen_port=self.args.listen_port,
-            node_capabilities=["relay", "storage"] if not self.args.genesis else ["relay", "storage", "compute", "dns", "bootstrap"],
-            
-            # Sub-configurations
             security=security,
             p2p=p2p,
             mesh=mesh,
             dns=dns,
             routing=routing,
-            
-            # Feature flags
-            enable_discovery=True,
-            enable_dht=not self.args.no_dht,
-            enable_nat_traversal=not self.args.no_nat,
-            enable_mesh=True,
-            enable_dns=self.args.enable_dns or self.args.genesis,
-            enable_adaptive_routing=True,
-            enable_metrics=not self.args.no_metrics,
-            enable_compression=not self.args.no_compression,
-            enable_storage=self.args.enable_storage,
-            enable_quantum=self.args.enable_quantum,
-            enable_blockchain=self.args.enable_blockchain,
-            enable_compute=self.args.enable_compute,
+            node_name=f"csp-node-{int(time.time())}",
+            node_type="genesis" if self.args.genesis else "standard",
+            capabilities=capabilities,
+            data_dir=Path("./data"),
         )
+        
+        # Add custom attributes after creation (these aren't part of the dataclass)
+        config.network_id = self.args.network_id
+        config.listen_address = self.args.listen_address
+        config.listen_port = self.args.listen_port
+        config.node_capabilities = ["relay", "storage"] if not self.args.genesis else ["relay", "storage", "compute", "dns", "bootstrap"]
+        config.enable_discovery = True
+        config.enable_dht = not self.args.no_dht
+        config.enable_nat_traversal = not self.args.no_nat
+        config.enable_mesh = True
+        config.enable_dns = self.args.enable_dns or self.args.genesis
+        config.enable_adaptive_routing = True
+        config.enable_metrics = not self.args.no_metrics
+        config.enable_compression = not self.args.no_compression
+        config.enable_storage = self.args.enable_storage
+        config.enable_quantum = self.args.enable_quantum
+        config.enable_blockchain = self.args.enable_blockchain
+        config.enable_compute = self.args.enable_compute
+        config.is_super_peer = self.args.super_peer or self.args.genesis
+        config.max_peers = self.args.max_peers
+        
+        # Add security-related attributes that are expected but not in SecurityConfig
+        config.security.enable_pq_crypto = self.args.pq_crypto
+        config.security.enable_zero_trust = self.args.zero_trust
+        config.security.tls_rotation_interval = self.args.tls_rotation_days * 86400
         
         return config
     
