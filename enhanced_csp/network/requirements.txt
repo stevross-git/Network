@@ -1,0 +1,305 @@
+# Enhanced CSP System - Complete Dependencies
+# ===========================================
+
+# Core FastAPI and Web Framework
+fastapi
+uvicorn[standard]
+pydantic
+starlette
+jinja2
+python-multipart
+
+# Database and ORM
+sqlalchemy
+alembic
+# sqlite3 is part of the Python standard library
+psycopg2-binary  # PostgreSQL support
+asyncpg  # Async PostgreSQL
+
+# Redis and Caching
+redis
+aioredis
+hiredis
+
+# HTTP and WebSocket
+httpx
+aiohttp
+websockets
+aiofiles
+
+# Enhanced CSP Core Dependencies
+numpy
+scipy
+networkx
+asyncio-mqtt
+uvloop  # High-performance event loop
+
+# AI and Machine Learning
+transformers
+torch
+sentence-transformers
+scikit-learn
+openai
+tiktoken
+langchain
+langchain-openai
+
+# Quantum Computing
+qiskit
+cirq
+pennylane
+qiskit-aer
+qiskit-ibmq-provider
+
+# Neural Networks and Deep Learning
+tensorflow
+keras
+pytorch-lightning
+tensorboard
+
+# Monitoring and Observability
+prometheus-client
+opentelemetry-api
+opentelemetry-sdk
+opentelemetry-instrumentation-fastapi
+opentelemetry-exporter-jaeger
+jaeger-client
+structlog
+
+# Security and Authentication
+cryptography
+bcrypt
+python-jose[cryptography]
+passlib[bcrypt]
+pycryptodome
+
+# Configuration and Environment
+pyyaml
+python-dotenv
+dynaconf
+jsonschema
+
+# CLI and Rich Output
+click
+rich
+typer
+colorama
+tabulate
+
+# Data Processing and Analysis
+pandas
+polars
+pyarrow
+jsonlines
+
+# Visualization and Plotting
+matplotlib
+plotly
+seaborn
+bokeh
+graphviz
+
+# Dashboard and Web UI
+dash
+dash-bootstrap-components
+streamlit
+gradio
+
+# Development and Debugging
+ipython
+jupyter
+ipdb
+memory-profiler
+line-profiler
+
+# Testing Framework
+pytest
+pytest-asyncio
+pytest-mock
+pytest-cov
+pytest-xdist
+factory-boy
+hypothesis
+
+# Code Quality and Linting
+black
+isort
+flake8
+mypy
+pre-commit
+bandit
+
+# Documentation
+sphinx
+sphinx-rtd-theme
+mkdocs
+mkdocs-material
+
+# System and Process Management
+psutil
+docker
+kubernetes
+celery
+gunicorn
+
+# Networking and Communication
+zmq  # Will install pyzmq
+pyzmq
+nats-py
+pika  # RabbitMQ
+
+# Serialization and Compression
+msgpack
+orjson
+lz4
+zstandard
+
+# Time and Scheduling
+schedule
+croniter
+pendulum
+
+# Utility Libraries
+more-itertools
+toolz
+funcy
+retrying
+tenacity
+
+# Graph and Network Analysis
+igraph
+community
+python-louvain
+
+# Geospatial (for distributed deployment)
+geopy
+folium
+
+# Cloud Provider SDKs
+boto3  # AWS
+azure-identity  # Azure
+azure-mgmt-containerinstance
+google-cloud-run  # Google Cloud
+google-cloud-storage
+
+# Container and Orchestration
+# docker-compose Python package is deprecated; install Docker Compose separately
+helm
+
+# Protocol Buffers and gRPC
+protobuf
+grpcio
+grpcio-tools
+
+# Message Queues and Event Streaming
+kafka-python
+confluent-kafka
+apache-beam
+
+# Blockchain and Distributed Ledger (for advanced features)
+web3
+eth-account
+
+# Image and Media Processing
+pillow
+opencv-python
+
+# Natural Language Processing
+spacy
+nltk
+textblob
+
+# Financial and Economic Data (for real-world applications)
+yfinance
+pandas-datareader
+
+# Scientific Computing
+sympy
+numba
+cython
+
+# Web Scraping and Data Collection
+requests
+beautifulsoup4
+scrapy
+
+# Email and Notifications
+# smtplib  # Built-in
+emails
+twilio
+
+# Configuration Management
+hydra-core
+omegaconf
+
+# Development Environment
+python-decouple
+environs
+
+# Performance and Profiling
+# cProfile  # Built-in
+py-spy
+scalene
+
+# Experimental and Research
+gym  # Reinforcement Learning
+stable-baselines3
+optuna  # Hyperparameter optimization
+
+# Additional Utilities
+tqdm
+alive-progress
+humanize
+arrow
+# dateutil is part of python-dateutil, usually bundled with pandas
+
+# Security Scanning
+safety
+semgrep
+
+# Code Generation and AST
+# ast  # Built-in
+astor
+jinja2-time
+
+# API Documentation
+redoc
+swagger-ui-bundle
+
+# Logging and Monitoring
+loguru
+sentry-sdk
+newrelic
+
+# Background Tasks
+rq
+dramatiq
+
+# Data Validation
+cerberus
+marshmallow
+
+# Caching
+diskcache
+joblib
+
+# Deployment and Infrastructure
+ansible
+pulumi
+
+# Development Dependencies (should be in requirements-dev.txt)
+# But included here for completeness
+autopep8
+rope
+jedi
+
+
+aiohttp>=3.8.0
+aiodns>=3.0.0
+msgpack>=1.0.0
+lz4>=4.0.0
+python-snappy>=0.6.0
+zstandard>=0.18.0
+brotli>=1.0.0
+psutil>=5.9.0
+prometheus-client>=0.15.0
