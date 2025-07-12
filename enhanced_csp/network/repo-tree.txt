@@ -1,0 +1,83 @@
+.
+├── adaptive_optimizer.py
+├── batching_fixes.py
+├── batching.py
+├── compression.py
+├── connection_pool.py
+├── core
+│   ├── config.py
+│   ├── constraints.txt
+│   ├── enhanced_config.py
+│   ├── __init__.py
+│   ├── node.py
+│   └── types.py
+├── cpu_optimizations.py
+├── dashboard
+│   ├── index.html
+│   └── status_server_update.py
+├── database_models.py
+├── db_integration_example.py
+├── dns
+│   ├── __init__.py
+│   └── overlay.py
+├── errors.py
+├── examples
+│   ├── chat_application.py
+│   ├── complete_optimization_example.py
+│   └── speed_optimization_example.py
+├── fast_event_loop.py
+├── fast_serialization.py
+├── fixes
+│   └── critical_optimizations.py
+├── __init__.py
+├── main.py
+├── mesh
+│   ├── __init__.py
+│   ├── routing.py
+│   └── topology.py
+├── metrics_endpoint.py
+├── minimal_speed_test.py
+├── ml_routing.py
+├── monitoring_integration.py
+├── monitoring.py
+├── optimized_channel.py
+├── p2p
+│   ├── dht.py
+│   ├── discovery.py
+│   ├── __init__.py
+│   ├── nat.py
+│   ├── quantum_manager.py
+│   ├── quic_transport.py
+│   └── transport.py
+├── protocol_optimizer.py
+├── README.md
+├── repo-structure.txt
+├── repo-tree.txt
+├── routing
+│   ├── adaptive.py
+│   ├── __init__.py
+│   ├── metrics.py
+│   └── multipath.py
+├── standalone_speed_test.py
+├── test_compression.py
+├── test_optimizations.py
+├── tests
+│   ├── test_network_complete.py
+│   └── test_network_stack.py
+├── topology_optimizer.py
+├── transport_factory.py
+├── utils
+│   ├── __init__.py
+│   ├── message_batcher.py
+│   ├── rate_limit.py
+│   ├── retry.py
+│   ├── secure_random.py
+│   ├── structured_logging.py
+│   ├── task_manager.py
+│   ├── threadsafe.py
+│   └── validation.py
+├── utils.py
+├── vectorized_io.py
+└── zero_copy.py
+
+10 directories, 70 files
