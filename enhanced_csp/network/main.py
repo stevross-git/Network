@@ -27,10 +27,11 @@ try:
 except Exception:  # pragma: no cover - optional dependency
     AIOHTTP_AVAILABLE = False
 
+
 logger = logging.getLogger(__name__)
 
 
-async def run_main(args: argparse.Namespace) -> None:
+
     manager = NodeManager(args)
     shell = InteractiveShell(manager) if not args.no_shell else None
     status_server = None
