@@ -1,305 +1,203 @@
-# enhanced_csp/network/utils/__init__.py
-"""Utility functions and classes for Enhanced CSP Network."""
+"""Network utility functions and helpers.
+
+Provides common utilities for networking operations, data processing,
+and system integration.
+"""
 
 import logging
-import time
-import ipaddress
 from typing import Any, Optional, Union
-from pathlib import Path
 
-# Import validation functions with fallbacks
+# Import functions from validation module
 try:
-    from .validation import validate_ip_address, validate_port_number
+    from .validation import (
+        validate_ip_address,
+        validate_port_number, 
+        validate_node_id,
+        validate_message_size,
+        sanitize_string_input,
+        validate_input,
+        PeerRateLimiter,
+        MAX_MESSAGE_SIZE
+    )
+    _validation_available = True
 except ImportError:
-    def validate_ip_address(ip_str: str) -> str:
-        """Validate IP address (fallback implementation)."""
+    _validation_available = False
+    # Fallback implementations
+    def validate_message_size(data, max_size=1024*1024):
+        """Fallback message size validator."""
+        import json
+        if isinstance(data, (bytes, bytearray)):
+            size = len(data)
+        elif isinstance(data, str):
+            size = len(data.encode())
+        else:
+            try:
+                serialized = json.dumps(data).encode()
+                size = len(serialized)
+            except Exception:
+                size = 0
+        if size > max_size:
+            raise ValueError(f"Message too large: {size} bytes")
+    
+    def validate_ip_address(ip_str):
+        """Fallback IP validator."""
+        import ipaddress
         try:
-            ip = ipaddress.ip_address(ip_str.strip())
-            return str(ip)
+            ipaddress.ip_address(ip_str)
+            return ip_str
         except ValueError as e:
             raise ValueError(f"Invalid IP address: {ip_str}") from e
     
-    def validate_port_number(port: Union[int, str]) -> int:
-        """Validate port number (fallback implementation)."""
+    def validate_port_number(port):
+        """Fallback port validator."""
         try:
             port_int = int(port)
             if not (1 <= port_int <= 65535):
-                raise ValueError(f"Port out of range: {port_int}")
+                raise ValueError(f"Invalid port number: {port}")
             return port_int
-        except (ValueError, TypeError) as e:
-            raise ValueError(f"Invalid port: {port}") from e
+        except (TypeError, ValueError) as e:
+            raise ValueError(f"Invalid port number: {port}") from e
 
-# Import logging utilities with fallbacks
+# Import logging utilities
 try:
     from .structured_logging import (
-        setup_logging, get_logger, NetworkLogger, SecurityLogger,
-        PerformanceLogger, AuditLogger
+        get_logger,
+        setup_logging,
+        NetworkLogger,
+        SecurityLogger,
+        PerformanceLogger,
+        AuditLogger
     )
+    _logging_available = True
 except ImportError:
-    def setup_logging(level: int = logging.INFO, 
-                     log_file: Optional[Path] = None) -> None:
-        """Setup basic logging (fallback implementation)."""
-        format_str = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-        
-        if log_file:
-            logging.basicConfig(
-                level=level,
-                format=format_str,
-                filename=str(log_file),
-                filemode='a'
-            )
-        else:
-            logging.basicConfig(level=level, format=format_str)
-    
+    _logging_available = False
+    # Fallback implementations
     def get_logger(name: str) -> logging.Logger:
-        """Get a logger instance (fallback implementation)."""
+        """Get a logger with the specified name (fallback)."""
         return logging.getLogger(name)
     
-    class NetworkLogger:
-        """Network logger (fallback implementation)."""
-        def __init__(self, name: str = "network"):
-            self.logger = logging.getLogger(name)
+    def setup_logging(level: str = "INFO", log_file: Optional[str] = None) -> None:
+        """Setup basic logging (fallback)."""
+        numeric_level = getattr(logging, level.upper(), logging.INFO)
+        formatter = logging.Formatter(
+            '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+        )
         
-        def info(self, message: str, **kwargs):
-            self.logger.info(message, extra=kwargs)
+        handler = logging.StreamHandler()
+        handler.setLevel(numeric_level)
+        handler.setFormatter(formatter)
         
-        def warning(self, message: str, **kwargs):
-            self.logger.warning(message, extra=kwargs)
-        
-        def error(self, message: str, **kwargs):
-            self.logger.error(message, extra=kwargs)
-    
-    class SecurityLogger(NetworkLogger):
-        """Security logger (fallback implementation)."""
-        def __init__(self):
-            super().__init__("security")
-    
-    class PerformanceLogger(NetworkLogger):
-        """Performance logger (fallback implementation)."""
-        def __init__(self):
-            super().__init__("performance")
-    
-    class AuditLogger(NetworkLogger):
-        """Audit logger (fallback implementation)."""
-        def __init__(self):
-            super().__init__("audit")
+        root_logger = logging.getLogger()
+        root_logger.setLevel(numeric_level)
+        root_logger.handlers.clear()
+        root_logger.addHandler(handler)
 
-# Import other utilities with fallbacks
+# Try to import from the parent utils.py file
 try:
-    from .rate_limit import RateLimiter
-except ImportError:
-    import asyncio
-    import time
-    
-    class RateLimiter:
-        """Rate limiter (fallback implementation)."""
-        
-        def __init__(self, max_tokens: int = 100, refill_rate: float = 10.0):
-            self.max_tokens = max_tokens
-            self.refill_rate = refill_rate
-            self.tokens = max_tokens
-            self.last_refill = time.time()
-            self._lock = asyncio.Lock()
-        
-        async def acquire(self, tokens: int = 1) -> bool:
-            """Acquire tokens from the bucket."""
-            async with self._lock:
-                now = time.time()
-                time_passed = now - self.last_refill
-                
-                # Refill tokens
-                self.tokens = min(
-                    self.max_tokens,
-                    self.tokens + time_passed * self.refill_rate
-                )
-                self.last_refill = now
-                
-                # Check if we have enough tokens
-                if self.tokens >= tokens:
-                    self.tokens -= tokens
-                    return True
-                
-                return False
-
-try:
-    from .retry import retry_with_backoff
-except ImportError:
-    import asyncio
-    import random
-    
-    async def retry_with_backoff(func, max_retries: int = 3, 
-                               base_delay: float = 1.0, max_delay: float = 60.0):
-        """Retry function with exponential backoff (fallback implementation)."""
-        for attempt in range(max_retries + 1):
-            try:
-                if asyncio.iscoroutinefunction(func):
-                    return await func()
-                else:
-                    return func()
-            except Exception as e:
-                if attempt == max_retries:
-                    raise e
-                
-                delay = min(base_delay * (2 ** attempt) + random.uniform(0, 1), max_delay)
-                await asyncio.sleep(delay)
-
-try:
-    from .secure_random import secure_bytes, secure_string
-except ImportError:
-    import secrets
-    import string
-    
-    def secure_bytes(length: int) -> bytes:
-        """Generate secure random bytes (fallback implementation)."""
-        return secrets.token_bytes(length)
-    
-    def secure_string(length: int) -> str:
-        """Generate secure random string (fallback implementation)."""
-        alphabet = string.ascii_letters + string.digits
-        return ''.join(secrets.choice(alphabet) for _ in range(length))
-
-# Timer utility class
-class Timer:
-    """Simple timer utility for performance measurement."""
-    
-    def __init__(self):
-        self.start_time = None
-        self.end_time = None
-    
-    def start(self):
-        """Start the timer."""
-        self.start_time = time.perf_counter()
-        self.end_time = None
-    
-    def stop(self):
-        """Stop the timer."""
-        if self.start_time is None:
-            raise ValueError("Timer not started")
-        self.end_time = time.perf_counter()
-    
-    def elapsed(self) -> float:
-        """Get elapsed time in seconds."""
-        if self.start_time is None:
-            raise ValueError("Timer not started")
-        
-        end_time = self.end_time or time.perf_counter()
-        return end_time - self.start_time
-    
-    def __enter__(self):
-        """Context manager entry."""
-        self.start()
-        return self
-    
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        """Context manager exit."""
-        self.stop()
-
-# Utility functions for formatting
-def format_bytes(num_bytes: int) -> str:
-    """Format bytes in human readable format."""
-    for unit in ['B', 'KB', 'MB', 'GB', 'TB']:
-        if num_bytes < 1024.0:
-            return f"{num_bytes:.1f} {unit}"
-        num_bytes /= 1024.0
-    return f"{num_bytes:.1f} PB"
-
-def format_duration(seconds: float) -> str:
-    """Format duration in human readable format."""
-    if seconds < 1:
-        return f"{seconds*1000:.1f}ms"
-    elif seconds < 60:
-        return f"{seconds:.1f}s"
-    elif seconds < 3600:
-        minutes = seconds / 60
-        return f"{minutes:.1f}m"
-    else:
-        hours = seconds / 3600
-        return f"{hours:.1f}h"
-
-def format_rate(count: int, duration: float) -> str:
-    """Format rate (count per second)."""
-    if duration <= 0:
-        return "0.0/s"
-    rate = count / duration
-    if rate < 1:
-        return f"{rate:.3f}/s"
-    elif rate < 1000:
-        return f"{rate:.1f}/s"
-    else:
-        return f"{rate/1000:.1f}k/s"
-
-# Configuration helpers
-def load_config_file(config_path: Path) -> dict:
-    """Load configuration from file with format detection."""
-    config_path = Path(config_path)
-    
-    if not config_path.exists():
-        raise FileNotFoundError(f"Configuration file not found: {config_path}")
-    
-    if config_path.suffix.lower() == '.json':
-        import json
-        with config_path.open('r') as f:
-            return json.load(f)
-    elif config_path.suffix.lower() in ['.yml', '.yaml']:
+    import sys
+    import os
+    parent_dir = os.path.dirname(os.path.dirname(__file__))
+    utils_file = os.path.join(parent_dir, 'utils.py')
+    if os.path.exists(utils_file):
+        # Add parent directory to path temporarily
+        sys.path.insert(0, parent_dir)
         try:
-            import yaml
-            with config_path.open('r') as f:
-                return yaml.safe_load(f)
+            from utils import (
+                format_bytes,
+                format_duration,
+                get_local_ip,
+                is_port_available
+            )
+            _parent_utils_available = True
         except ImportError:
-            raise ImportError("PyYAML required for YAML configuration files")
+            _parent_utils_available = False
+        finally:
+            # Remove from path
+            if parent_dir in sys.path:
+                sys.path.remove(parent_dir)
     else:
-        raise ValueError(f"Unsupported configuration file format: {config_path.suffix}")
-
-def save_config_file(config: dict, config_path: Path) -> None:
-    """Save configuration to file with format detection."""
-    config_path = Path(config_path)
-    config_path.parent.mkdir(parents=True, exist_ok=True)
+        _parent_utils_available = False
+except Exception:
+    _parent_utils_available = False
     
-    if config_path.suffix.lower() == '.json':
-        import json
-        with config_path.open('w') as f:
-            json.dump(config, f, indent=2)
-    elif config_path.suffix.lower() in ['.yml', '.yaml']:
-        try:
-            import yaml
-            with config_path.open('w') as f:
-                yaml.safe_dump(config, f, default_flow_style=False)
-        except ImportError:
-            raise ImportError("PyYAML required for YAML configuration files")
-    else:
-        raise ValueError(f"Unsupported configuration file format: {config_path.suffix}")
+    # Fallback utility functions
+    def format_bytes(bytes_value: int) -> str:
+        """Format bytes into human readable string."""
+        if bytes_value == 0:
+            return "0 B"
+        units = ["B", "KB", "MB", "GB", "TB"]
+        unit_index = 0
+        size = float(bytes_value)
+        while size >= 1024 and unit_index < len(units) - 1:
+            size /= 1024
+            unit_index += 1
+        return f"{size:.1f} {units[unit_index]}"
+    
+    def get_local_ip() -> str:
+        """Get local IP address."""
+        return "127.0.0.1"
 
-# Export all utilities
+# Import other utility modules if available
+try:
+    from .helpers import *
+except ImportError:
+    pass
+
+try:
+    from .validators import *
+except ImportError:
+    pass
+
+try:
+    from .converters import *
+except ImportError:
+    pass
+
 __all__ = [
-    # Validation
+    # Core validation functions
     "validate_ip_address",
     "validate_port_number",
+    "validate_message_size",
     
-    # Logging
-    "setup_logging",
+    # Additional validation functions (if available)
+    "validate_node_id",
+    "sanitize_string_input", 
+    "validate_input",
+    "PeerRateLimiter",
+    "MAX_MESSAGE_SIZE",
+    
+    # Logging functions
     "get_logger",
+    "setup_logging",
+    
+    # Structured logging (if available)
     "NetworkLogger",
     "SecurityLogger", 
     "PerformanceLogger",
     "AuditLogger",
     
-    # Rate limiting
-    "RateLimiter",
-    
-    # Retry logic
-    "retry_with_backoff",
-    
-    # Secure random
-    "secure_bytes",
-    "secure_string",
-    
-    # Timer and formatting
-    "Timer",
+    # Utility functions (if available)
     "format_bytes",
     "format_duration",
-    "format_rate",
+    "get_local_ip",
+    "is_port_available",
     
-    # Configuration
-    "load_config_file",
-    "save_config_file",
+    # Module groups
+    "helpers",
+    "validators", 
+    "converters",
 ]
+
+# Module metadata
+__version__ = "1.0.0"
+__description__ = "Enhanced CSP Network Utilities"
+
+# Debug function to check what's available
+def get_import_status():
+    """Return status of all imports for debugging."""
+    return {
+        "validation_module": _validation_available,
+        "logging_module": _logging_available,
+        "parent_utils": _parent_utils_available,
+        "available_functions": [name for name in __all__ if name in globals()]
+    }

@@ -17,6 +17,18 @@ try:
     HAS_ZEROCONF = True
 except ImportError:
     HAS_ZEROCONF = False
+    # Create stub classes for type hints when zeroconf is not available
+    class Zeroconf:
+        """Stub class for when zeroconf is not installed."""
+        pass
+    
+    class ServiceBrowser:
+        """Stub class for when zeroconf is not installed."""
+        pass
+    
+    class ServiceInfo:
+        """Stub class for when zeroconf is not installed."""
+        pass
     
 try:
     import aiodns
@@ -194,7 +206,7 @@ class HybridDiscovery:
         except Exception as e:
             logger.error(f"Failed to start mDNS: {e}")
     
-    def add_service(self, zeroconf: Zeroconf, service_type: str, name: str):
+    def add_service(self, zeroconf, service_type: str, name: str):
         """Called when a new mDNS service is discovered."""
         # Check if we have a running event loop
         try:
@@ -209,11 +221,11 @@ class HybridDiscovery:
                     self._main_loop
                 )
     
-    def remove_service(self, zeroconf: Zeroconf, service_type: str, name: str):
+    def remove_service(self, zeroconf, service_type: str, name: str):
         """Called when an mDNS service is removed."""
         logger.debug(f"mDNS service removed: {name}")
     
-    def update_service(self, zeroconf: Zeroconf, service_type: str, name: str):
+    def update_service(self, zeroconf, service_type: str, name: str):
         """Called when an mDNS service is updated."""
         # Same fix as add_service
         try:
@@ -226,7 +238,7 @@ class HybridDiscovery:
                     self._main_loop
                 )
     
-    async def _handle_mdns_service(self, zeroconf: Zeroconf, service_type: str, name: str):
+    async def _handle_mdns_service(self, zeroconf, service_type: str, name: str):
         """Handle discovered mDNS service."""
         try:
             # For zeroconf >= 0.39.0, we need to use async API
