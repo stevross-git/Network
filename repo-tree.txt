@@ -2,23 +2,12 @@
 ├── config
 │   └── network_config.json
 ├── create_init_files.py
+├── csp_network_dashboard.html
+├── dashboard_server.py
 ├── data
 ├── debug_network_startup.py
 ├── enhanced_csp
 │   ├── blockchain_csp_network.py
-│   ├── enhanced_csp
-│   │   └── network
-│   │       ├── core
-│   │       ├── dashboard
-│   │       ├── dns
-│   │       ├── examples
-│   │       ├── mesh
-│   │       ├── optimization
-│   │       ├── p2p
-│   │       ├── routing
-│   │       ├── security
-│   │       ├── tests
-│   │       └── utils
 │   ├── fix_imports.py
 │   ├── __init__.py
 │   ├── launch_csp.py
@@ -162,6 +151,7 @@
 ├── network_diagnostics.json
 ├── network_diagnostics.py
 ├── network_startup.py
+├── network_with_dashboard.py
 ├── quick_import_fix.py
 ├── repo-tree.txt
 ├── run_network.py
@@ -169,4 +159,4 @@
 ├── start_network.sh
 └── test_data
 
-38 directories, 131 files
+25 directories, 134 files
