@@ -75,7 +75,7 @@ class NetworkRunner:
         config.mesh = MeshConfig()
         config.mesh.enable_super_peers = True
         config.mesh.max_peers = 50
-        config.mesh.topology_type = "adaptive_partial"
+        config.mesh.topology_type = "dynamic_partial"
         
         # Security configuration
         config.security = SecurityConfig()

@@ -208,14 +208,14 @@ class BatmanRouting:
         
         # Create OGM
         ogm = OriginatorMessage(
-            originator_id=self.node.node_id,
+            originator_id=self.node if isinstance(self.node, NodeID) else self.node if isinstance(self.node, NodeID) else self.node.node_id,
             sequence_number=self.sequence_number,
             ttl=self.TTL_DEFAULT,
             tq=self.TQ_MAX  # Perfect quality for our own messages
         )
         
         # Determine if we're a gateway (super-peer)
-        if hasattr(self.topology, 'super_peers') and self.node.node_id in self.topology.super_peers:
+        if hasattr(self.topology, 'super_peers') and self.node if isinstance(self.node, NodeID) else self.node.node_id in self.topology.super_peers:
             ogm.gateway_flags = 1
         
         # Get neighbors - handle both old and new topology interfaces
@@ -223,7 +223,7 @@ class BatmanRouting:
         
         # Try new interface first
         if hasattr(self.topology, 'peer_connections'):
-            neighbors = self.topology.peer_connections.get(self.node.node_id, set())
+            neighbors = self.topology.peer_connections.get(self.node if isinstance(self.node, NodeID) else self.node.node_id, set())
         # Fallback to get_mesh_neighbors
         elif hasattr(self.topology, 'get_mesh_neighbors'):
             neighbors = set(self.topology.get_mesh_neighbors())
@@ -263,7 +263,7 @@ class BatmanRouting:
                 return
             
             # Ignore our own OGMs
-            if ogm.originator_id == self.node.node_id:
+            if ogm.originator_id == self.node if isinstance(self.node, NodeID) else self.node.node_id:
                 return
             
             # Update last seen
@@ -357,7 +357,7 @@ class BatmanRouting:
         
         # Try new interface first
         if hasattr(self.topology, 'peer_connections'):
-            neighbors = self.topology.peer_connections.get(self.node.node_id, set())
+            neighbors = self.topology.peer_connections.get(self.node if isinstance(self.node, NodeID) else self.node.node_id, set())
         # Fallback to get_mesh_neighbors
         elif hasattr(self.topology, 'get_mesh_neighbors'):
             neighbors = set(self.topology.get_mesh_neighbors())
@@ -406,7 +406,7 @@ class BatmanRouting:
                 await asyncio.sleep(5)  # Every 5 seconds
                 
                 # Update TQ for each neighbor based on packet loss
-                for neighbor_id in self.topology.peer_connections.get(self.node.node_id, set()):
+                for neighbor_id in self.topology.peer_connections.get(self.node if isinstance(self.node, NodeID) else self.node.node_id, set()):
                     # Get neighbor's route entry (to us)
                     if neighbor_id in self.routing_table:
                         entry = self.routing_table[neighbor_id]
@@ -426,7 +426,7 @@ class BatmanRouting:
     
     def get_route(self, destination: NodeID) -> Optional[RoutingEntry]:
         """Get best route to destination"""
-        if destination == self.node.node_id:
+        if destination == self.node if isinstance(self.node, NodeID) else self.node.node_id:
             # Route to self
             return RoutingEntry(
                 destination=destination,
@@ -481,7 +481,7 @@ class BatmanRouting:
         """Reconstruct path to destination"""
         # Simple path reconstruction
         # In full implementation, would track actual paths
-        path = [self.node.node_id]
+        path = [self.node if isinstance(self.node, NodeID) else self.node.node_id]
         
         if next_hop:
             path.append(next_hop)

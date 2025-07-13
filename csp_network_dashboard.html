@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced CSP Network Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .dashboard {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.1);
+            padding: 8px 16px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            animation: pulse 2s infinite;
+        }
+
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #00ff88;
+            box-shadow: 0 0 10px #00ff88;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 25px;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.6s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.2);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .card-icon {
+            font-size: 24px;
+            padding: 8px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 8px;
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .metric:last-child {
+            border-bottom: none;
+        }
+
+        .metric-label {
+            font-size: 0.95rem;
+            opacity: 0.8;
+        }
+
+        .metric-value {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .capabilities {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .capability {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        .capability.enabled {
+            background: rgba(0,255,136,0.2);
+            border: 1px solid rgba(0,255,136,0.3);
+        }
+
+        .capability.disabled {
+            background: rgba(255,100,100,0.2);
+            border: 1px solid rgba(255,100,100,0.3);
+            opacity: 0.7;
+        }
+
+        .capability-icon {
+            font-size: 16px;
+        }
+
+        .peer-list {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .peer {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+
+        .peer-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .peer-info {
+            flex: 1;
+        }
+
+        .peer-id {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .peer-address {
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+
+        .logs {
+            background: rgba(0,0,0,0.3);
+            border-radius: 12px;
+            padding: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+
+        .log-entry {
+            margin-bottom: 8px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .log-timestamp {
+            color: #888;
+            margin-right: 10px;
+        }
+
+        .log-level {
+            margin-right: 10px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+
+        .log-level.info { background: rgba(0,123,255,0.3); }
+        .log-level.warning { background: rgba(255,193,7,0.3); }
+        .log-level.error { background: rgba(220,53,69,0.3); }
+        .log-level.success { background: rgba(40,167,69,0.3); }
+
+        .chart-container {
+            position: relative;
+            height: 200px;
+            margin-top: 15px;
+        }
+
+        .chart {
+            width: 100%;
+            height: 100%;
+        }
+
+        .topology-view {
+            position: relative;
+            height: 250px;
+            border-radius: 12px;
+            background: rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .node-indicator {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #00ff88, #00d4ff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 12px;
+            box-shadow: 0 0 20px rgba(0,255,136,0.5);
+            animation: pulse 3s infinite;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .node-indicator:hover {
+            transform: scale(1.2);
+            box-shadow: 0 0 30px rgba(0,255,136,0.8);
+        }
+
+        .node-indicator.self {
+            background: linear-gradient(45deg, #ff6b6b, #ff8e53);
+            box-shadow: 0 0 20px rgba(255,107,107,0.5);
+        }
+
+        .connection-line {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transform-origin: left center;
+            animation: dataFlow 2s linear infinite;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        @keyframes dataFlow {
+            0% { opacity: 0; transform: scaleX(0); }
+            50% { opacity: 1; transform: scaleX(1); }
+            100% { opacity: 0; transform: scaleX(0); }
+        }
+
+        .refresh-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            animation: pulse 2s infinite;
+        }
+
+        .refresh-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 30px rgba(0,0,0,0.4);
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <div class="header">
+            <h1>🚀 Enhanced CSP Network</h1>
+            <div class="subtitle">Real-time monitoring and control</div>
+            <div class="status-indicator">
+                <div class="status-dot"></div>
+                <span id="status-text">Online</span>
+            </div>
+        </div>
+
+        <div class="grid">
+            <!-- Node Information -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🏷️</div>
+                    <div class="card-title">Node Information</div>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Node ID</span>
+                    <span class="metric-value" id="node-id">Loading...</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Network ID</span>
+                    <span class="metric-value" id="network-id">Loading...</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Node Type</span>
+                    <span class="metric-value" id="node-type">Enhanced Node</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Version</span>
+                    <span class="metric-value" id="version">v1.0.0</span>
+                </div>
+            </div>
+
+            <!-- Connection Status -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🌐</div>
+                    <div class="card-title">Connection Status</div>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Connected Peers</span>
+                    <span class="metric-value" id="peer-count">5</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Listen Port</span>
+                    <span class="metric-value" id="listen-port">30301</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">External IP</span>
+                    <span class="metric-value" id="external-ip">122.150.139.60:1421</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">NAT Type</span>
+                    <span class="metric-value" id="nat-type">Symmetric</span>
+                </div>
+            </div>
+
+            <!-- Performance Metrics -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">📊</div>
+                    <div class="card-title">Performance</div>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Uptime</span>
+                    <span class="metric-value" id="uptime">0h 0m</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Messages Sent</span>
+                    <span class="metric-value" id="messages-sent">0</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Messages Received</span>
+                    <span class="metric-value" id="messages-received">0</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Data Transfer</span>
+                    <span class="metric-value" id="data-transfer">0 KB</span>
+                </div>
+            </div>
+
+            <!-- Network Capabilities -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">⚡</div>
+                    <div class="card-title">Capabilities</div>
+                </div>
+                <div class="capabilities" id="capabilities">
+                    <div class="capability enabled">
+                        <span class="capability-icon">🔄</span>
+                        <span>Relay</span>
+                    </div>
+                    <div class="capability disabled">
+                        <span class="capability-icon">💾</span>
+                        <span>Storage</span>
+                    </div>
+                    <div class="capability disabled">
+                        <span class="capability-icon">⚙️</span>
+                        <span>Compute</span>
+                    </div>
+                    <div class="capability enabled">
+                        <span class="capability-icon">🔮</span>
+                        <span>Quantum</span>
+                    </div>
+                    <div class="capability enabled">
+                        <span class="capability-icon">🌐</span>
+                        <span>DNS</span>
+                    </div>
+                    <div class="capability enabled">
+                        <span class="capability-icon">🚀</span>
+                        <span>Bootstrap</span>
+                    </div>
+                    <div class="capability enabled">
+                        <span class="capability-icon">🧠</span>
+                        <span>AI</span>
+                    </div>
+                    <div class="capability enabled">
+                        <span class="capability-icon">🕸️</span>
+                        <span>Mesh Routing</span>
+                    </div>
+                    <div class="capability enabled">
+                        <span class="capability-icon">🔓</span>
+                        <span>NAT Traversal</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Network Topology -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon">🕸️</div>
+                <div class="card-title">Network Topology</div>
+            </div>
+            <div class="topology-view" id="topology">
+                <div class="node-indicator self" style="top: 50%; left: 50%; transform: translate(-50%, -50%);" title="Your Node">
+                    YOU
+                </div>
+            </div>
+        </div>
+
+        <!-- Connected Peers -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon">👥</div>
+                <div class="card-title">Connected Peers</div>
+            </div>
+            <div class="peer-list" id="peer-list">
+                <div class="peer">
+                    <div class="peer-avatar">P1</div>
+                    <div class="peer-info">
+                        <div class="peer-id">QmPeer1ABC...</div>
+                        <div class="peer-address">via multiaddr</div>
+                    </div>
+                </div>
+                <div class="peer">
+                    <div class="peer-avatar">P2</div>
+                    <div class="peer-info">
+                        <div class="peer-id">QmPeer2DEF...</div>
+                        <div class="peer-address">via multiaddr</div>
+                    </div>
+                </div>
+                <div class="peer">
+                    <div class="peer-avatar">P3</div>
+                    <div class="peer-info">
+                        <div class="peer-id">QmPeer3GHI...</div>
+                        <div class="peer-address">via multiaddr</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Live Logs -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon">📝</div>
+                <div class="card-title">Live Network Logs</div>
+            </div>
+            <div class="logs" id="logs">
+                <div class="log-entry">
+                    <span class="log-timestamp">20:28:06</span>
+                    <span class="log-level success">INFO</span>
+                    Enhanced CSP Network started successfully!
+                </div>
+                <div class="log-entry">
+                    <span class="log-timestamp">20:28:06</span>
+                    <span class="log-level info">INFO</span>
+                    Successfully connected to genesis network!
+                </div>
+                <div class="log-entry">
+                    <span class="log-timestamp">20:28:06</span>
+                    <span class="log-level info">INFO</span>
+                    Discovered 5 peers via discovery!
+                </div>
+                <div class="log-entry">
+                    <span class="log-timestamp">20:28:06</span>
+                    <span class="log-level info">INFO</span>
+                    Starting network event loop...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button class="refresh-btn" onclick="refreshData()" title="Refresh Data">
+        🔄
+    </button>
+
+    <script>
+        // Global state
+        let startTime = Date.now();
+        let refreshInterval;
+        let networkData = {
+            nodeId: "QmZB6ZZ39iaCPaRhnUHhA51X4v1dZwsVg8VtUtmmSWzn7x",
+            networkId: "QmVFhpXGPh8UjqYWyJs3Ed3yq7YEsdnUggfSzdfA8yKPFL",
+            peers: 5,
+            capabilities: {
+                relay: true,
+                storage: false,
+                compute: false,
+                quantum: true,
+                blockchain: false,
+                dns: true,
+                bootstrap: true,
+                ai: true,
+                mesh_routing: true,
+                nat_traversal: true
+            }
+        };
+
+        // Initialize dashboard
+        function initDashboard() {
+            updateNodeInfo();
+            updateCapabilities();
+            updateTopology();
+            startUpdateLoop();
+            addLiveLogs();
+        }
+
+        // Update node information
+        function updateNodeInfo() {
+            document.getElementById('node-id').textContent = truncateId(networkData.nodeId);
+            document.getElementById('network-id').textContent = truncateId(networkData.networkId);
+            document.getElementById('peer-count').textContent = networkData.peers;
+        }
+
+        // Update capabilities display
+        function updateCapabilities() {
+            const capabilitiesContainer = document.getElementById('capabilities');
+            const capabilities = [
+                { key: 'relay', icon: '🔄', name: 'Relay' },
+                { key: 'storage', icon: '💾', name: 'Storage' },
+                { key: 'compute', icon: '⚙️', name: 'Compute' },
+                { key: 'quantum', icon: '🔮', name: 'Quantum' },
+                { key: 'dns', icon: '🌐', name: 'DNS' },
+                { key: 'bootstrap', icon: '🚀', name: 'Bootstrap' },
+                { key: 'ai', icon: '🧠', name: 'AI' },
+                { key: 'mesh_routing', icon: '🕸️', name: 'Mesh Routing' },
+                { key: 'nat_traversal', icon: '🔓', name: 'NAT Traversal' }
+            ];
+
+            capabilitiesContainer.innerHTML = '';
+            capabilities.forEach(cap => {
+                const enabled = networkData.capabilities[cap.key];
+                const div = document.createElement('div');
+                div.className = `capability ${enabled ? 'enabled' : 'disabled'}`;
+                div.innerHTML = `
+                    <span class="capability-icon">${cap.icon}</span>
+                    <span>${cap.name}</span>
+                `;
+                capabilitiesContainer.appendChild(div);
+            });
+        }
+
+        // Update network topology visualization
+        function updateTopology() {
+            const topology = document.getElementById('topology');
+            const peerCount = networkData.peers;
+            
+            // Clear existing peers (keep self node)
+            const existingPeers = topology.querySelectorAll('.node-indicator:not(.self)');
+            existingPeers.forEach(peer => peer.remove());
+            
+            // Add peer nodes in a circle around the center
+            for (let i = 0; i < peerCount; i++) {
+                const angle = (i * 2 * Math.PI) / peerCount;
+                const radius = 80;
+                const x = 50 + (radius * Math.cos(angle)) / 250 * 100;
+                const y = 50 + (radius * Math.sin(angle)) / 250 * 100;
+                
+                const peer = document.createElement('div');
+                peer.className = 'node-indicator';
+                peer.style.left = `${x}%`;
+                peer.style.top = `${y}%`;
+                peer.style.transform = 'translate(-50%, -50%)';
+                peer.textContent = `P${i + 1}`;
+                peer.title = `Peer ${i + 1}`;
+                
+                // Add connection line
+                const line = document.createElement('div');
+                line.className = 'connection-line';
+                const lineLength = Math.sqrt(Math.pow(x - 50, 2) + Math.pow(y - 50, 2));
+                const lineAngle = Math.atan2(y - 50, x - 50) * 180 / Math.PI;
+                line.style.width = `${lineLength}%`;
+                line.style.left = '50%';
+                line.style.top = '50%';
+                line.style.transform = `rotate(${lineAngle}deg)`;
+                line.style.transformOrigin = 'left center';
+                
+                topology.appendChild(line);
+                topology.appendChild(peer);
+            }
+        }
+
+        // Update uptime
+        function updateUptime() {
+            const uptime = Date.now() - startTime;
+            const hours = Math.floor(uptime / (1000 * 60 * 60));
+            const minutes = Math.floor((uptime % (1000 * 60 * 60)) / (1000 * 60));
+            document.getElementById('uptime').textContent = `${hours}h ${minutes}m`;
+        }
+
+        // Add live log entries
+        function addLiveLogs() {
+            const logs = document.getElementById('logs');
+            const logMessages = [
+                'B.A.T.M.A.N. routing protocol active',
+                'ML route predictor optimizing paths',
+                'NAT traversal maintaining connections',
+                'Mesh topology optimization completed',
+                'DHT synchronization in progress',
+                'Adaptive routing engine running',
+                'Quantum features initialized',
+                'DNS overlay responding to queries'
+            ];
+
+            setInterval(() => {
+                const message = logMessages[Math.floor(Math.random() * logMessages.length)];
+                const timestamp = new Date().toLocaleTimeString('en-US', { hour12: false });
+                const logEntry = document.createElement('div');
+                logEntry.className = 'log-entry';
+                logEntry.innerHTML = `
+                    <span class="log-timestamp">${timestamp}</span>
+                    <span class="log-level info">INFO</span>
+                    ${message}
+                `;
+                
+                logs.insertBefore(logEntry, logs.firstChild);
+                
+                // Keep only last 20 entries
+                while (logs.children.length > 20) {
+                    logs.removeChild(logs.lastChild);
+                }
+            }, 5000 + Math.random() * 10000); // Random interval 5-15 seconds
+        }
+
+        // Start update loop
+        function startUpdateLoop() {
+            refreshInterval = setInterval(() => {
+                updateUptime();
+                // Simulate minor data changes
+                if (Math.random() < 0.1) {
+                    networkData.peers = 4 + Math.floor(Math.random() * 3); // 4-6 peers
+                    document.getElementById('peer-count').textContent = networkData.peers;
+                    updateTopology();
+                }
+            }, 1000);
+        }
+
+        // Refresh all data
+        function refreshData() {
+            const btn = document.querySelector('.refresh-btn');
+            btn.innerHTML = '<div class="loading"></div>';
+            
+            setTimeout(() => {
+                // Simulate data refresh
+                updateNodeInfo();
+                updateCapabilities();
+                updateTopology();
+                btn.innerHTML = '🔄';
+                
+                // Add refresh log entry
+                const logs = document.getElementById('logs');
+                const timestamp = new Date().toLocaleTimeString('en-US', { hour12: false });
+                const logEntry = document.createElement('div');
+                logEntry.className = 'log-entry';
+                logEntry.innerHTML = `
+                    <span class="log-timestamp">${timestamp}</span>
+                    <span class="log-level success">INFO</span>
+                    Dashboard refreshed successfully
+                `;
+                logs.insertBefore(logEntry, logs.firstChild);
+            }, 1500);
+        }
+
+        // Utility function to truncate node IDs
+        function truncateId(id) {
+            return id ? `${id.substring(0, 20)}...` : 'Loading...';
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', initDashboard);
+    </script>
+</body>
+</html>

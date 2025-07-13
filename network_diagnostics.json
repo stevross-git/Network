@@ -1,0 +1,187 @@
+{
+  "system": {
+    "os": "Linux",
+    "python_version": "3.12.11",
+    "python_ok": true
+  },
+  "connectivity": {
+    "genesis_servers": [
+      [
+        "genesis.peoplesainetwork.com",
+        4001,
+        false,
+        "Timeout"
+      ],
+      [
+        "147.75.77.187",
+        4001,
+        false,
+        "Timeout"
+      ],
+      [
+        "seed1.peoplesainetwork.com",
+        4001,
+        false,
+        "Timeout"
+      ],
+      [
+        "seed2.peoplesainetwork.com",
+        4001,
+        false,
+        "[Errno -3] Temporary failure in name resolution"
+      ]
+    ],
+    "internet": true
+  },
+  "dns": [
+    [
+      "genesis.peoplesainetwork.com",
+      true,
+      [
+        "16.176.29.132",
+        "16.176.29.132",
+        "16.176.29.132"
+      ]
+    ],
+    [
+      "seed1.peoplesainetwork.com",
+      true,
+      [
+        "54.252.173.251",
+        "54.252.173.251",
+        "54.252.173.251"
+      ]
+    ],
+    [
+      "seed2.peoplesainetwork.com",
+      false,
+      "[Errno -3] Temporary failure in name resolution"
+    ]
+  ],
+  "ports": [
+    [
+      4002,
+      true,
+      "Available"
+    ],
+    [
+      4003,
+      true,
+      "Available"
+    ],
+    [
+      4004,
+      true,
+      "Available"
+    ],
+    [
+      30300,
+      true,
+      "Available"
+    ],
+    [
+      30301,
+      true,
+      "Available"
+    ]
+  ],
+  "python_env": {
+    "packages": [
+      [
+        "asyncio",
+        true,
+        "Available"
+      ],
+      [
+        "aiohttp",
+        true,
+        "Available"
+      ],
+      [
+        "cryptography",
+        true,
+        "Available"
+      ],
+      [
+        "pathlib",
+        true,
+        "Available"
+      ],
+      [
+        "json",
+        true,
+        "Available"
+      ],
+      [
+        "socket",
+        true,
+        "Available"
+      ]
+    ],
+    "pip_available": true
+  },
+  "csp_modules": [
+    [
+      "enhanced_csp",
+      true,
+      "Available"
+    ],
+    [
+      "enhanced_csp.network",
+      true,
+      "Available"
+    ],
+    [
+      "enhanced_csp.network.core",
+      true,
+      "Available"
+    ],
+    [
+      "enhanced_csp.network.core.config",
+      true,
+      "Available"
+    ],
+    [
+      "enhanced_csp.network.core.node",
+      false,
+      "cannot import name 'TaskManager' from 'enhanced_csp.network.utils' (/home/mate/PAIN/Network/enhanced_csp/network/utils/__init__.py)"
+    ],
+    [
+      "enhanced_csp.network.utils",
+      true,
+      "Available"
+    ]
+  ],
+  "configuration": [
+    [
+      "enhanced_csp/",
+      true,
+      "Exists"
+    ],
+    [
+      "enhanced_csp/network/",
+      true,
+      "Exists"
+    ],
+    [
+      "enhanced_csp/run_network.py",
+      true,
+      "Exists"
+    ],
+    [
+      "config/",
+      true,
+      "Exists"
+    ],
+    [
+      "network_data/",
+      true,
+      "Exists"
+    ],
+    [
+      "requirements-lock.txt",
+      false,
+      "Missing"
+    ]
+  ]
+}

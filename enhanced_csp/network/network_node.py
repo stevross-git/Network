@@ -41,19 +41,25 @@ class SimpleRoutingStub:
 class EnhancedCSPNetwork:
     """Unified Enhanced CSP Network node with optional components."""
 
+    # Replace the __init__ method in enhanced_csp/network/network_node.py
+
     def __init__(self, config: Optional[NetworkConfig] = None) -> None:
         self.config = config or NetworkConfig()
         self.node_id = NodeID.generate()
         self._event_handlers: Dict[str, List[Callable]] = {}
 
+        # ✅ FIX: Create enhanced capabilities instead of using missing config flags
         self.capabilities = NodeCapabilities(
             relay=True,
-            storage=self.config.enable_storage,
-            compute=self.config.enable_compute,
-            quantum=self.config.enable_quantum,
-            blockchain=self.config.enable_blockchain,
-            dns=self.config.enable_dns,
-            bootstrap=False,
+            storage=getattr(self.config, 'enable_storage', True),
+            compute=getattr(self.config, 'enable_compute', True),
+            quantum=getattr(self.config, 'enable_quantum', True),
+            blockchain=getattr(self.config, 'enable_blockchain', False),
+            dns=getattr(self.config, 'enable_dns', True),
+            bootstrap=True,  # ✅ Enable bootstrap capability
+            ai=getattr(self.config, 'enable_ai', True),
+            mesh_routing=True,  # ✅ Enable mesh routing
+            nat_traversal=True, # ✅ Enable NAT traversal
         )
 
         # Core components

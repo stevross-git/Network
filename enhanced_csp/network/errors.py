@@ -184,6 +184,18 @@ class ErrorMetrics:
             'severity': error.severity.value,
             'category': error.category.value,
         })
+        
+    def record(self, exc: Exception) -> None:
+        """Record an exception occurrence (compatibility method)."""
+        # Convert regular Exception to NetworkError for compatibility
+        if isinstance(exc, NetworkError):
+            self.record_error(exc)
+        else:
+            # Create a NetworkError wrapper for non-NetworkError exceptions
+            wrapper = NetworkError(str(exc))
+            wrapper.severity = ErrorSeverity.MEDIUM
+            wrapper.category = ErrorCategory.CONNECTION
+            self.record_error(wrapper)
     
     def get_error_rate(self) -> float:
         """Calculate recent error rate (errors per minute)."""

@@ -1,8 +1,29 @@
 .
+├── config
+│   └── network_config.json
+├── create_init_files.py
+├── data
+├── debug_network_startup.py
 ├── enhanced_csp
 │   ├── blockchain_csp_network.py
+│   ├── enhanced_csp
+│   │   └── network
+│   │       ├── core
+│   │       ├── dashboard
+│   │       ├── dns
+│   │       ├── examples
+│   │       ├── mesh
+│   │       ├── optimization
+│   │       ├── p2p
+│   │       ├── routing
+│   │       ├── security
+│   │       ├── tests
+│   │       └── utils
+│   ├── fix_imports.py
 │   ├── __init__.py
+│   ├── launch_csp.py
 │   ├── local_ai_agent.py
+│   ├── main_modern.py
 │   ├── main.py
 │   ├── network
 │   │   ├── adaptive_optimizer.py
@@ -17,14 +38,18 @@
 │   │   │   ├── constraints.txt
 │   │   │   ├── enhanced_config.py
 │   │   │   ├── __init__.py
+│   │   │   ├── network.py
 │   │   │   ├── node.py
 │   │   │   └── types.py
 │   │   ├── cpu_optimizations.py
 │   │   ├── dashboard
 │   │   │   ├── index.html
+│   │   │   ├── __init__.py
 │   │   │   └── status_server_update.py
+│   │   ├── data
 │   │   ├── database_models.py
 │   │   ├── db_integration_example.py
+│   │   ├── dev_data
 │   │   ├── dns
 │   │   │   ├── __init__.py
 │   │   │   └── overlay.py
@@ -32,6 +57,7 @@
 │   │   ├── examples
 │   │   │   ├── chat_application.py
 │   │   │   ├── complete_optimization_example.py
+│   │   │   ├── __init__.py
 │   │   │   └── speed_optimization_example.py
 │   │   ├── fast_event_loop.py
 │   │   ├── fast_serialization.py
@@ -44,6 +70,7 @@
 │   │   │   ├── rdma_transport.py
 │   │   │   └── smartnic_offload.py
 │   │   ├── __init__.py
+│   │   ├── __init__.py.backup
 │   │   ├── main.py
 │   │   ├── mesh
 │   │   │   ├── __init__.py
@@ -56,6 +83,8 @@
 │   │   ├── monitoring.py
 │   │   ├── network_node.py
 │   │   ├── node_manager.py
+│   │   ├── optimization
+│   │   │   └── __init__.py
 │   │   ├── optimized_channel.py
 │   │   ├── p2p
 │   │   │   ├── dht.py
@@ -87,18 +116,22 @@
 │   │   │   ├── __init__.py
 │   │   │   └── security_hardening.py
 │   │   ├── shell.py
+│   │   ├── simple_main.py
 │   │   ├── standalone_speed_test.py
 │   │   ├── status_server.py
 │   │   ├── temp
 │   │   ├── test_compression.py
+│   │   ├── test_functional.py
 │   │   ├── test_optimizations.py
 │   │   ├── tests
+│   │   │   ├── __init__.py
 │   │   │   ├── test_network_complete.py
 │   │   │   └── test_network_stack.py
 │   │   ├── topology_optimizer.py
 │   │   ├── transport_factory.py
 │   │   ├── utils
 │   │   │   ├── __init__.py
+│   │   │   ├── __init__.py.backup
 │   │   │   ├── lazy_import.py
 │   │   │   ├── message_batcher.py
 │   │   │   ├── optional_import.py
@@ -113,8 +146,27 @@
 │   │   ├── vectorized_io.py
 │   │   └── zero_copy.py
 │   ├── quantum_csp_engine.py
-│   └── security_hardening.py
+│   ├── run_network.py
+│   ├── run_production.py
+│   ├── security_hardening.py
+│   ├── setup.py
+│   └── simple_main.py
+├── fix_imports.py
+├── fix_network_init.py
+├── genesis_connectivity_test.py
 ├── .gitignore
-└── repo-tree.txt
+├── main.py
+├── network_benchmark.py
+├── network_config_helper.py
+├── network_data
+├── network_diagnostics.json
+├── network_diagnostics.py
+├── network_startup.py
+├── quick_import_fix.py
+├── repo-tree.txt
+├── run_network.py
+├── simple_network_test.py
+├── start_network.sh
+└── test_data
 
-18 directories, 99 files
+38 directories, 131 files

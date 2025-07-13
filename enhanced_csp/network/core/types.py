@@ -38,6 +38,15 @@ class MessageType(Enum):
     ROUTING = "routing"
     AUTH = "auth"
     ERROR = "error"
+    BATCH = "batch"
+    DHT_QUERY = "dht_query"
+    DHT_RESPONSE = "dht_response"
+    DNS_QUERY = "dns_query"
+    DNS_RESPONSE = "dns_response"
+    BOOTSTRAP = "bootstrap"
+    PEER_ANNOUNCE = "peer_announce"
+    ROUTE_UPDATE = "route_update"
+
 
 
 @dataclass
@@ -116,16 +125,16 @@ class NodeID:
 @dataclass
 class NodeCapabilities:
     """Node capability flags."""
-    relay: bool = False
-    storage: bool = False
-    compute: bool = False
-    quantum: bool = False
-    blockchain: bool = False
-    dns: bool = False
-    bootstrap: bool = False
-    ai: bool = False
-    mesh_routing: bool = False
-    nat_traversal: bool = False
+    relay: bool = True           # ✅ Enable message relay by default
+    storage: bool = True         # ✅ Enable data storage by default
+    compute: bool = True         # ✅ Enable compute services by default
+    quantum: bool = True         # ✅ Enable quantum features by default
+    blockchain: bool = False     # ⚠️  Optional blockchain features
+    dns: bool = True            # ✅ Enable DNS overlay by default
+    bootstrap: bool = True       # ✅ Enable bootstrap capability by default
+    ai: bool = True             # ✅ Enable AI features by default
+    mesh_routing: bool = True    # ✅ Enable mesh routing by default
+    nat_traversal: bool = True   # ✅ Enable NAT traversal by default
     
     def to_dict(self) -> Dict[str, bool]:
         """Convert to dictionary."""

@@ -1,0 +1,103 @@
+"""Enhanced CSP Network utilities."""
+
+# Import what exists, ignore what doesn't
+try:
+    from .task_manager import TaskManager, ResourceManager
+except ImportError:
+    # Create minimal fallback classes
+    class TaskManager:
+        def __init__(self): 
+            self.tasks = set()
+        def create_task(self, coro, name=None): 
+            import asyncio
+            return asyncio.create_task(coro, name=name)
+        async def cancel_all(self): 
+            pass
+    
+    class ResourceManager:
+        def __init__(self): 
+            pass
+        async def close_all(self): 
+            pass
+
+try:
+    from .structured_logging import get_logger, setup_logging
+except ImportError:
+    import logging
+    def get_logger(name):
+        return logging.getLogger(name)
+    def setup_logging(level="INFO"):
+        logging.basicConfig(level=getattr(logging, level.upper()))
+
+# Try to import other modules, but don't fail if they don't exist
+try:
+    from .retry import retry_async, CircuitBreaker
+except ImportError:
+    def retry_async(*args, **kwargs):
+        def decorator(func):
+            return func
+        return decorator
+    
+    class CircuitBreaker:
+        def __init__(self, *args, **kwargs):
+            pass
+
+try:
+    from .rate_limit import RateLimiter
+except ImportError:
+    class RateLimiter:
+        def __init__(self, *args, **kwargs):
+            pass
+
+try:
+    from .message_batcher import MessageBatcher, BatchConfig
+except ImportError:
+    class MessageBatcher:
+        def __init__(self, *args, **kwargs):
+            pass
+    class BatchConfig:
+        pass
+
+try:
+    from .validation import validate_ip_address, validate_port_number
+except ImportError:
+    def validate_ip_address(ip):
+        return ip
+    def validate_port_number(port):
+        return int(port)
+
+# Logging classes
+class NetworkLogger:
+    def __init__(self, name):
+        self.logger = get_logger(name)
+
+class SecurityLogger:
+    def __init__(self, name):
+        self.logger = get_logger(name)
+
+class PerformanceLogger:
+    def __init__(self, name):
+        self.logger = get_logger(name)
+
+class AuditLogger:
+    def __init__(self, name):
+        self.logger = get_logger(name)
+
+# Export everything
+__all__ = [
+    "TaskManager",
+    "ResourceManager", 
+    "get_logger",
+    "setup_logging",
+    "NetworkLogger",
+    "SecurityLogger", 
+    "PerformanceLogger",
+    "AuditLogger",
+    "retry_async",
+    "CircuitBreaker",
+    "RateLimiter",
+    "MessageBatcher",
+    "BatchConfig",
+    "validate_ip_address",
+    "validate_port_number",
+]

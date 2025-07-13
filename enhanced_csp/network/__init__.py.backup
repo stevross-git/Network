@@ -1,0 +1,86 @@
+# Here are all the missing __init__.py files you need to create:
+
+# ==============================================================================
+# FILE: enhanced_csp/network/__init__.py
+# ==============================================================================
+# enhanced_csp/network/__init__.py
+"""
+Enhanced CSP Network Module
+Peer-to-peer networking, mesh topology, and adaptive routing
+"""
+
+__version__ = "1.0.0"
+
+# Core network types and classes - lazy imports to avoid circular dependencies
+def _lazy_import():
+    try:
+        from .core.types import (
+            NodeID,
+            NodeCapabilities,
+            PeerInfo,
+            NetworkMessage,
+            MessageType,
+        )
+        
+        from .core.config import (
+            NetworkConfig,
+            SecurityConfig,
+            P2PConfig,
+            MeshConfig,
+            DNSConfig,
+            RoutingConfig,
+            PQCConfig,
+        )
+        
+        return {
+            'NodeID': NodeID,
+            'NodeCapabilities': NodeCapabilities,
+            'PeerInfo': PeerInfo,
+            'NetworkMessage': NetworkMessage,
+            'MessageType': MessageType,
+            'NetworkConfig': NetworkConfig,
+            'SecurityConfig': SecurityConfig,
+            'P2PConfig': P2PConfig,
+            'MeshConfig': MeshConfig,
+            'DNSConfig': DNSConfig,
+            'RoutingConfig': RoutingConfig,
+            'PQCConfig': PQCConfig,
+        }
+    except ImportError:
+        return {}
+
+# Module globals for lazy loading
+_IMPORTS = None
+
+def __getattr__(name):
+    """Lazy import mechanism."""
+    global _IMPORTS
+    if _IMPORTS is None:
+        _IMPORTS = _lazy_import()
+    
+    if name in _IMPORTS:
+        return _IMPORTS[name]
+    
+    raise AttributeError(f"module '{__name__}' has no attribute '{name}'")
+
+# Export main classes and functions
+__all__ = [
+    # Version
+    "__version__",
+    
+    # Core types
+    "NodeID",
+    "NodeCapabilities", 
+    "PeerInfo",
+    "NetworkMessage",
+    "MessageType",
+    
+    # Configuration
+    "NetworkConfig",
+    "SecurityConfig",
+    "P2PConfig",
+    "MeshConfig", 
+    "DNSConfig",
+    "RoutingConfig",
+    "PQCConfig",
+]

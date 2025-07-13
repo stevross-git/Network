@@ -1,4 +1,25 @@
+#!/usr/bin/env python3
 """
+Fix Network __init__.py Script
+Fixes the enhanced_csp/network/__init__.py file to handle missing imports gracefully.
+"""
+
+from pathlib import Path
+import sys
+
+def fix_network_init():
+    """Fix the network/__init__.py file."""
+    
+    network_init_path = Path("enhanced_csp/network/__init__.py")
+    
+    print(f"🔧 Fixing {network_init_path}...")
+    
+    if not network_init_path.exists():
+        print(f"❌ File not found: {network_init_path}")
+        return False
+    
+    # Create a safe network __init__.py that handles imports gracefully
+    new_content = '''"""
 Enhanced CSP Network Module
 Peer-to-peer networking, mesh topology, and adaptive routing
 """
@@ -298,3 +319,83 @@ def get_import_status():
         "errors": _ERRORS_AVAILABLE,
         "utils": _UTILS_AVAILABLE,
     }
+'''
+    
+    # Backup the original file
+    backup_path = network_init_path.with_suffix('.py.backup')
+    if network_init_path.exists():
+        network_init_path.rename(backup_path)
+        print(f"📦 Backed up original to: {backup_path}")
+    
+    # Write the new content
+    try:
+        network_init_path.write_text(new_content)
+        print(f"✅ Fixed {network_init_path}")
+        return True
+    except Exception as e:
+        print(f"❌ Failed to fix {network_init_path}: {e}")
+        # Restore backup if write failed
+        if backup_path.exists():
+            backup_path.rename(network_init_path)
+            print(f"🔄 Restored backup")
+        return False
+
+def test_network_imports():
+    """Test if the network imports now work."""
+    print("\n🧪 Testing network imports...")
+    
+    try:
+        # Clear any cached modules
+        for module_name in list(sys.modules.keys()):
+            if module_name.startswith('enhanced_csp.network'):
+                del sys.modules[module_name]
+        
+        # Try the problematic imports
+        from enhanced_csp.network import create_network, create_node
+        from enhanced_csp.network import NetworkConfig, NodeID
+        
+        print("✅ Network imports successful!")
+        
+        # Test basic functionality
+        config = NetworkConfig()
+        network = create_network(config)
+        node = create_node(config)
+        
+        print("✅ Network objects created successfully!")
+        
+        # Test the functions that were missing
+        print(f"✅ create_network: {create_network}")
+        print(f"✅ create_node: {create_node}")
+        
+        return True
+        
+    except Exception as e:
+        print(f"❌ Network imports still failing: {e}")
+        import traceback
+        traceback.print_exc()
+        return False
+
+def main():
+    """Main function."""
+    print("🚀 Network Init Fix Script")
+    print("=" * 40)
+    
+    # Check if we're in the right directory
+    if not Path("enhanced_csp").exists():
+        print("❌ enhanced_csp directory not found!")
+        print("💡 Make sure you're running from the project root")
+        return
+    
+    # Fix the network init file
+    if fix_network_init():
+        # Test the imports
+        if test_network_imports():
+            print("\n🎉 Network init fix successful!")
+            print("💡 You can now run: python3 network_startup.py --quick-start")
+        else:
+            print("\n⚠️  Network init fix applied but still having issues")
+    else:
+        print("\n❌ Failed to apply network init fix")
+
+if __name__ == "__main__":
+    main()
