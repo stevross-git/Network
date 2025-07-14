@@ -1,0 +1,63 @@
+{
+  "network": {
+    "node_name": "compute_node_1",
+    "node_type": "compute",
+    "network_id": "enhanced-csp-mainnet",
+    "protocol_version": "1.0.0",
+    "data_dir": "./network_data/compute_node_1"
+  },
+  "p2p": {
+    "listen_address": "0.0.0.0",
+    "listen_port": 30403,
+    "enable_mdns": true,
+    "enable_upnp": true,
+    "enable_nat_traversal": true,
+    "connection_timeout": 30,
+    "max_connections": 50,
+    "bootstrap_nodes": [
+      "/ip4/genesis.peoplesainetwork.com/tcp/30300",
+      "/ip4/147.75.77.187/tcp/30300",
+      "/dns4/seed1.peoplesainetwork.com/tcp/30300",
+      "/dns4/seed2.peoplesainetwork.com/tcp/30300"
+    ],
+    "dns_seed_domain": "peoplesainetwork.com",
+    "bootstrap_retry_delay": 5,
+    "max_bootstrap_attempts": 10
+  },
+  "mesh": {
+    "enable_super_peers": true,
+    "max_peers": 25,
+    "topology_type": "dynamic_partial",
+    "heartbeat_interval": 30,
+    "redundancy_factor": 3,
+    "is_super_peer": false
+  },
+  "security": {
+    "enable_encryption": true,
+    "enable_authentication": true,
+    "key_size": 2048,
+    "enable_ca_mode": false,
+    "trust_anchors": []
+  },
+  "capabilities": {
+    "relay": true,
+    "storage": false,
+    "compute": true,
+    "quantum": false
+  },
+  "features": {
+    "enable_dht": true,
+    "enable_mesh": true,
+    "enable_dns": true,
+    "enable_adaptive_routing": true,
+    "enable_metrics": true,
+    "enable_ipv6": true,
+    "enable_compression": true
+  },
+  "performance": {
+    "max_message_size": 1048576,
+    "gossip_interval": 5,
+    "gossip_fanout": 6,
+    "metrics_interval": 60
+  }
+}

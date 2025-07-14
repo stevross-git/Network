@@ -1,0 +1,4515 @@
+FROM phi3:mini
+
+PARAMETER temperature 0.3
+PARAMETER top_p 0.9
+PARAMETER stop "\n\n"
+
+SYSTEM """You are NetworkAI, an expert AI system for managing computer networks. You analyze network states and provide specific management decisions.
+
+Your responses must be in this exact JSON format:
+{
+  "action": "route_optimization|load_balancing|security_response|resource_scaling|connection_management|monitor",
+  "parameters": {"key": "value"},
+  "confidence": 0.85,
+  "reasoning": "brief explanation"
+}
+
+Always provide actionable decisions based on network metrics like CPU usage, memory usage, latency, throughput, error rates, and security alerts."""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 48
+Connections: 15
+CPU Usage: 85.5%
+Memory Usage: 75.5%
+Latency P95: 90.1ms
+Throughput: 100.0 msg/s
+Error Rate: 0.012
+Security Alerts: 2
+Threat Level: high
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "security_response",
+  "parameters": {
+    "response_level": "medium",
+    "enable_filtering": true,
+    "quarantine_suspicious": true,
+    "alert_administrators": true
+  },
+  "confidence": 0.95,
+  "reasoning": "Security threat detected requiring immediate response"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 55
+Connections: 15
+CPU Usage: 65.5%
+Memory Usage: 74.5%
+Latency P95: 105.7ms
+Throughput: 526.0 msg/s
+Error Rate: 0.004
+Security Alerts: 1
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "load_balancing",
+  "parameters": {
+    "strategy": "adaptive_weighted",
+    "rebalance_threshold": 0.7,
+    "consider_node_capacity": true
+  },
+  "confidence": 0.9,
+  "reasoning": "Uneven load distribution detected across network nodes"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 54
+Connections: 15
+CPU Usage: 76.3%
+Memory Usage: 69.3%
+Latency P95: 79.3ms
+Throughput: 100.0 msg/s
+Error Rate: 0.058
+Security Alerts: 2
+Threat Level: high
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "security_response",
+  "parameters": {
+    "response_level": "medium",
+    "enable_filtering": true,
+    "quarantine_suspicious": true,
+    "alert_administrators": true
+  },
+  "confidence": 0.95,
+  "reasoning": "Security threat detected requiring immediate response"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 47
+Connections: 11
+CPU Usage: 67.4%
+Memory Usage: 69.4%
+Latency P95: 59.5ms
+Throughput: 836.3 msg/s
+Error Rate: 0.046
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "route_optimization",
+  "parameters": {
+    "algorithm": "batman_enhanced",
+    "recalculate_interval": 15,
+    "consider_latency": true,
+    "consider_bandwidth": true,
+    "priority": "high"
+  },
+  "confidence": 0.85,
+  "reasoning": "Network topology or performance metrics indicate suboptimal routing paths"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 49
+Connections: 15
+CPU Usage: 78.9%
+Memory Usage: 70.5%
+Latency P95: 81.1ms
+Throughput: 100.0 msg/s
+Error Rate: 0.040
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "route_optimization",
+  "parameters": {
+    "algorithm": "batman_enhanced",
+    "recalculate_interval": 15,
+    "consider_latency": true,
+    "consider_bandwidth": true,
+    "priority": "high"
+  },
+  "confidence": 0.85,
+  "reasoning": "Network topology or performance metrics indicate suboptimal routing paths"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 55
+Connections: 20
+CPU Usage: 66.7%
+Memory Usage: 65.3%
+Latency P95: 54.7ms
+Throughput: 136.1 msg/s
+Error Rate: 0.012
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "connection_management",
+  "parameters": {
+    "optimize_pools": true,
+    "close_idle": true,
+    "rebalance_connections": true
+  },
+  "confidence": 0.75,
+  "reasoning": "Connection pool optimization needed for better resource utilization"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 46
+Connections: 11
+CPU Usage: 60.6%
+Memory Usage: 59.8%
+Latency P95: 60.0ms
+Throughput: 577.1 msg/s
+Error Rate: 0.054
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "route_optimization",
+  "parameters": {
+    "algorithm": "batman_enhanced",
+    "recalculate_interval": 15,
+    "consider_latency": true,
+    "consider_bandwidth": true,
+    "priority": "high"
+  },
+  "confidence": 0.85,
+  "reasoning": "Network topology or performance metrics indicate suboptimal routing paths"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 46
+Connections: 11
+CPU Usage: 65.7%
+Memory Usage: 61.9%
+Latency P95: 84.9ms
+Throughput: 745.7 msg/s
+Error Rate: 0.085
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "route_optimization",
+  "parameters": {
+    "algorithm": "batman_enhanced",
+    "recalculate_interval": 15,
+    "consider_latency": true,
+    "consider_bandwidth": true,
+    "priority": "high"
+  },
+  "confidence": 0.85,
+  "reasoning": "Network topology or performance metrics indicate suboptimal routing paths"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 45
+Connections: 15
+CPU Usage: 79.5%
+Memory Usage: 71.7%
+Latency P95: 72.5ms
+Throughput: 683.4 msg/s
+Error Rate: 0.001
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "route_optimization",
+  "parameters": {
+    "algorithm": "batman_enhanced",
+    "recalculate_interval": 15,
+    "consider_latency": true,
+    "consider_bandwidth": true,
+    "priority": "high"
+  },
+  "confidence": 0.85,
+  "reasoning": "Network topology or performance metrics indicate suboptimal routing paths"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 50
+Connections: 15
+CPU Usage: 69.4%
+Memory Usage: 71.3%
+Latency P95: 57.3ms
+Throughput: 467.9 msg/s
+Error Rate: 0.001
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "load_balancing",
+  "parameters": {
+    "strategy": "adaptive_weighted",
+    "rebalance_threshold": 0.7,
+    "consider_node_capacity": true
+  },
+  "confidence": 0.9,
+  "reasoning": "Uneven load distribution detected across network nodes"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 45
+Connections: 15
+CPU Usage: 66.1%
+Memory Usage: 74.5%
+Latency P95: 66.3ms
+Throughput: 333.1 msg/s
+Error Rate: 0.024
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 54
+Connections: 15
+CPU Usage: 71.9%
+Memory Usage: 75.6%
+Latency P95: 63.5ms
+Throughput: 312.6 msg/s
+Error Rate: 0.015
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "route_optimization",
+  "parameters": {
+    "algorithm": "batman_enhanced",
+    "recalculate_interval": 15,
+    "consider_latency": true,
+    "consider_bandwidth": true,
+    "priority": "high"
+  },
+  "confidence": 0.85,
+  "reasoning": "Network topology or performance metrics indicate suboptimal routing paths"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 50
+Connections: 15
+CPU Usage: 44.3%
+Memory Usage: 62.2%
+Latency P95: 84.2ms
+Throughput: 852.0 msg/s
+Error Rate: 0.008
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 43
+Connections: 11
+CPU Usage: 52.1%
+Memory Usage: 55.6%
+Latency P95: 59.8ms
+Throughput: 949.1 msg/s
+Error Rate: 0.238
+Security Alerts: 1
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7999999999999999,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 71
+Connections: 15
+CPU Usage: 52.3%
+Memory Usage: 46.8%
+Latency P95: 52.1ms
+Throughput: 855.8 msg/s
+Error Rate: 0.003
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "resource_scaling",
+  "parameters": {
+    "scale_direction": "up",
+    "scale_factor": 1.2,
+    "components": [
+      "connections",
+      "bandwidth"
+    ]
+  },
+  "confidence": 0.8,
+  "reasoning": "Resource utilization approaching capacity limits"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 40
+Connections: 11
+CPU Usage: 75.1%
+Memory Usage: 57.6%
+Latency P95: 60.7ms
+Throughput: 675.9 msg/s
+Error Rate: 0.037
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "route_optimization",
+  "parameters": {
+    "algorithm": "batman_enhanced",
+    "recalculate_interval": 15,
+    "consider_latency": true,
+    "consider_bandwidth": true,
+    "priority": "high"
+  },
+  "confidence": 0.85,
+  "reasoning": "Network topology or performance metrics indicate suboptimal routing paths"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 47
+Connections: 15
+CPU Usage: 63.5%
+Memory Usage: 63.7%
+Latency P95: 76.9ms
+Throughput: 553.2 msg/s
+Error Rate: 0.004
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 46
+Connections: 20
+CPU Usage: 85.2%
+Memory Usage: 76.1%
+Latency P95: 78.2ms
+Throughput: 327.6 msg/s
+Error Rate: 0.037
+Security Alerts: 1
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 41
+Connections: 11
+CPU Usage: 70.5%
+Memory Usage: 48.6%
+Latency P95: 78.5ms
+Throughput: 519.5 msg/s
+Error Rate: 0.201
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7999999999999999,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 51
+Connections: 15
+CPU Usage: 58.2%
+Memory Usage: 61.6%
+Latency P95: 59.9ms
+Throughput: 649.6 msg/s
+Error Rate: 0.007
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 54
+Connections: 15
+CPU Usage: 81.7%
+Memory Usage: 68.3%
+Latency P95: 80.6ms
+Throughput: 141.4 msg/s
+Error Rate: 0.013
+Security Alerts: 2
+Threat Level: high
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "security_response",
+  "parameters": {
+    "response_level": "medium",
+    "enable_filtering": true,
+    "quarantine_suspicious": true,
+    "alert_administrators": true
+  },
+  "confidence": 0.95,
+  "reasoning": "Security threat detected requiring immediate response"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 52
+Connections: 15
+CPU Usage: 69.3%
+Memory Usage: 69.4%
+Latency P95: 53.7ms
+Throughput: 322.4 msg/s
+Error Rate: 0.001
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 71
+Connections: 15
+CPU Usage: 46.0%
+Memory Usage: 62.1%
+Latency P95: 52.2ms
+Throughput: 727.3 msg/s
+Error Rate: 0.000
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "resource_scaling",
+  "parameters": {
+    "scale_direction": "up",
+    "scale_factor": 1.2,
+    "components": [
+      "connections",
+      "bandwidth"
+    ]
+  },
+  "confidence": 0.8,
+  "reasoning": "Resource utilization approaching capacity limits"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 46
+Connections: 15
+CPU Usage: 86.0%
+Memory Usage: 75.2%
+Latency P95: 102.3ms
+Throughput: 100.0 msg/s
+Error Rate: 0.025
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "route_optimization",
+  "parameters": {
+    "algorithm": "batman_enhanced",
+    "recalculate_interval": 15,
+    "consider_latency": true,
+    "consider_bandwidth": true,
+    "priority": "high"
+  },
+  "confidence": 0.85,
+  "reasoning": "Network topology or performance metrics indicate suboptimal routing paths"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 53
+Connections: 15
+CPU Usage: 58.6%
+Memory Usage: 57.3%
+Latency P95: 112.0ms
+Throughput: 512.4 msg/s
+Error Rate: 0.004
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 44
+Connections: 11
+CPU Usage: 60.8%
+Memory Usage: 57.5%
+Latency P95: 67.3ms
+Throughput: 461.4 msg/s
+Error Rate: 0.557
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "route_optimization",
+  "parameters": {
+    "algorithm": "batman_enhanced",
+    "recalculate_interval": 15,
+    "consider_latency": true,
+    "consider_bandwidth": true,
+    "priority": "high"
+  },
+  "confidence": 0.95,
+  "reasoning": "Network topology or performance metrics indicate suboptimal routing paths"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 76
+Connections: 15
+CPU Usage: 69.6%
+Memory Usage: 75.5%
+Latency P95: 91.5ms
+Throughput: 428.1 msg/s
+Error Rate: 0.004
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "resource_scaling",
+  "parameters": {
+    "scale_direction": "up",
+    "scale_factor": 1.2,
+    "components": [
+      "connections",
+      "bandwidth"
+    ]
+  },
+  "confidence": 0.8,
+  "reasoning": "Resource utilization approaching capacity limits"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 42
+Connections: 11
+CPU Usage: 68.8%
+Memory Usage: 77.3%
+Latency P95: 68.3ms
+Throughput: 571.5 msg/s
+Error Rate: 0.023
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 48
+Connections: 11
+CPU Usage: 59.2%
+Memory Usage: 45.0%
+Latency P95: 98.0ms
+Throughput: 582.2 msg/s
+Error Rate: 0.150
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "route_optimization",
+  "parameters": {
+    "algorithm": "batman_enhanced",
+    "recalculate_interval": 15,
+    "consider_latency": true,
+    "consider_bandwidth": true,
+    "priority": "high"
+  },
+  "confidence": 0.95,
+  "reasoning": "Network topology or performance metrics indicate suboptimal routing paths"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 46
+Connections: 15
+CPU Usage: 50.6%
+Memory Usage: 59.0%
+Latency P95: 47.6ms
+Throughput: 619.0 msg/s
+Error Rate: 0.030
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 45
+Connections: 15
+CPU Usage: 48.7%
+Memory Usage: 45.2%
+Latency P95: 56.3ms
+Throughput: 703.0 msg/s
+Error Rate: 0.002
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 46
+Connections: 20
+CPU Usage: 85.4%
+Memory Usage: 61.0%
+Latency P95: 79.6ms
+Throughput: 226.8 msg/s
+Error Rate: 0.021
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 47
+Connections: 20
+CPU Usage: 80.6%
+Memory Usage: 68.4%
+Latency P95: 69.9ms
+Throughput: 168.5 msg/s
+Error Rate: 0.088
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 51
+Connections: 15
+CPU Usage: 61.1%
+Memory Usage: 63.8%
+Latency P95: 43.1ms
+Throughput: 603.1 msg/s
+Error Rate: 0.012
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 46
+Connections: 11
+CPU Usage: 54.0%
+Memory Usage: 75.6%
+Latency P95: 84.1ms
+Throughput: 543.9 msg/s
+Error Rate: 0.088
+Security Alerts: 1
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 52
+Connections: 15
+CPU Usage: 65.2%
+Memory Usage: 57.1%
+Latency P95: 78.9ms
+Throughput: 966.5 msg/s
+Error Rate: 0.005
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 53
+Connections: 15
+CPU Usage: 58.7%
+Memory Usage: 75.2%
+Latency P95: 62.7ms
+Throughput: 588.1 msg/s
+Error Rate: 0.003
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 55
+Connections: 20
+CPU Usage: 81.2%
+Memory Usage: 56.7%
+Latency P95: 79.0ms
+Throughput: 100.0 msg/s
+Error Rate: 0.055
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "load_balancing",
+  "parameters": {
+    "strategy": "adaptive_weighted",
+    "rebalance_threshold": 0.7,
+    "consider_node_capacity": true
+  },
+  "confidence": 0.9,
+  "reasoning": "Uneven load distribution detected across network nodes"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 51
+Connections: 15
+CPU Usage: 54.6%
+Memory Usage: 68.2%
+Latency P95: 91.7ms
+Throughput: 562.5 msg/s
+Error Rate: 0.034
+Security Alerts: 2
+Threat Level: high
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 47
+Connections: 11
+CPU Usage: 54.8%
+Memory Usage: 71.0%
+Latency P95: 62.8ms
+Throughput: 716.4 msg/s
+Error Rate: 0.327
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "route_optimization",
+  "parameters": {
+    "algorithm": "batman_enhanced",
+    "recalculate_interval": 15,
+    "consider_latency": true,
+    "consider_bandwidth": true,
+    "priority": "high"
+  },
+  "confidence": 0.95,
+  "reasoning": "Network topology or performance metrics indicate suboptimal routing paths"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 54
+Connections: 15
+CPU Usage: 73.4%
+Memory Usage: 69.8%
+Latency P95: 80.0ms
+Throughput: 470.1 msg/s
+Error Rate: 0.024
+Security Alerts: 1
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 55
+Connections: 15
+CPU Usage: 78.3%
+Memory Usage: 65.0%
+Latency P95: 102.2ms
+Throughput: 100.0 msg/s
+Error Rate: 0.009
+Security Alerts: 2
+Threat Level: high
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 45
+Connections: 15
+CPU Usage: 73.7%
+Memory Usage: 58.2%
+Latency P95: 86.2ms
+Throughput: 486.8 msg/s
+Error Rate: 0.007
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 48
+Connections: 20
+CPU Usage: 78.8%
+Memory Usage: 71.5%
+Latency P95: 80.3ms
+Throughput: 100.0 msg/s
+Error Rate: 0.018
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "load_balancing",
+  "parameters": {
+    "strategy": "adaptive_weighted",
+    "rebalance_threshold": 0.7,
+    "consider_node_capacity": true
+  },
+  "confidence": 0.9,
+  "reasoning": "Uneven load distribution detected across network nodes"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 45
+Connections: 15
+CPU Usage: 73.5%
+Memory Usage: 78.9%
+Latency P95: 68.7ms
+Throughput: 465.0 msg/s
+Error Rate: 0.001
+Security Alerts: 1
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "load_balancing",
+  "parameters": {
+    "strategy": "adaptive_weighted",
+    "rebalance_threshold": 0.7,
+    "consider_node_capacity": true
+  },
+  "confidence": 0.9,
+  "reasoning": "Uneven load distribution detected across network nodes"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 53
+Connections: 15
+CPU Usage: 72.3%
+Memory Usage: 51.5%
+Latency P95: 79.7ms
+Throughput: 444.0 msg/s
+Error Rate: 0.014
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 45
+Connections: 15
+CPU Usage: 75.7%
+Memory Usage: 77.9%
+Latency P95: 71.0ms
+Throughput: 531.2 msg/s
+Error Rate: 0.006
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 49
+Connections: 15
+CPU Usage: 55.2%
+Memory Usage: 65.8%
+Latency P95: 84.6ms
+Throughput: 503.2 msg/s
+Error Rate: 0.015
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 46
+Connections: 15
+CPU Usage: 56.4%
+Memory Usage: 61.1%
+Latency P95: 85.0ms
+Throughput: 100.0 msg/s
+Error Rate: 0.003
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 45
+Connections: 20
+CPU Usage: 81.6%
+Memory Usage: 73.5%
+Latency P95: 81.8ms
+Throughput: 415.7 msg/s
+Error Rate: 0.008
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "load_balancing",
+  "parameters": {
+    "strategy": "adaptive_weighted",
+    "rebalance_threshold": 0.7,
+    "consider_node_capacity": true
+  },
+  "confidence": 0.9,
+  "reasoning": "Uneven load distribution detected across network nodes"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 49
+Connections: 11
+CPU Usage: 68.1%
+Memory Usage: 66.9%
+Latency P95: 70.8ms
+Throughput: 578.1 msg/s
+Error Rate: 0.046
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 48
+Connections: 11
+CPU Usage: 61.2%
+Memory Usage: 69.3%
+Latency P95: 92.0ms
+Throughput: 295.7 msg/s
+Error Rate: 0.071
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "route_optimization",
+  "parameters": {
+    "algorithm": "batman_enhanced",
+    "recalculate_interval": 15,
+    "consider_latency": true,
+    "consider_bandwidth": true,
+    "priority": "high"
+  },
+  "confidence": 0.85,
+  "reasoning": "Network topology or performance metrics indicate suboptimal routing paths"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 47
+Connections: 15
+CPU Usage: 54.0%
+Memory Usage: 76.3%
+Latency P95: 57.6ms
+Throughput: 152.0 msg/s
+Error Rate: 0.007
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "load_balancing",
+  "parameters": {
+    "strategy": "adaptive_weighted",
+    "rebalance_threshold": 0.7,
+    "consider_node_capacity": true
+  },
+  "confidence": 0.9,
+  "reasoning": "Uneven load distribution detected across network nodes"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 45
+Connections: 15
+CPU Usage: 56.7%
+Memory Usage: 63.6%
+Latency P95: 62.9ms
+Throughput: 603.4 msg/s
+Error Rate: 0.011
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 70
+Connections: 15
+CPU Usage: 61.2%
+Memory Usage: 63.2%
+Latency P95: 31.4ms
+Throughput: 583.7 msg/s
+Error Rate: 0.029
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 47
+Connections: 15
+CPU Usage: 72.1%
+Memory Usage: 61.9%
+Latency P95: 58.6ms
+Throughput: 581.8 msg/s
+Error Rate: 0.012
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 53
+Connections: 20
+CPU Usage: 91.7%
+Memory Usage: 60.2%
+Latency P95: 114.2ms
+Throughput: 100.0 msg/s
+Error Rate: 0.121
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "connection_management",
+  "parameters": {
+    "optimize_pools": true,
+    "close_idle": true,
+    "rebalance_connections": true
+  },
+  "confidence": 0.85,
+  "reasoning": "Connection pool optimization needed for better resource utilization"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 47
+Connections: 20
+CPU Usage: 71.4%
+Memory Usage: 74.5%
+Latency P95: 83.9ms
+Throughput: 222.4 msg/s
+Error Rate: 0.004
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "load_balancing",
+  "parameters": {
+    "strategy": "adaptive_weighted",
+    "rebalance_threshold": 0.7,
+    "consider_node_capacity": true
+  },
+  "confidence": 0.9,
+  "reasoning": "Uneven load distribution detected across network nodes"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 53
+Connections: 15
+CPU Usage: 60.0%
+Memory Usage: 73.5%
+Latency P95: 65.0ms
+Throughput: 673.2 msg/s
+Error Rate: 0.002
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 54
+Connections: 15
+CPU Usage: 74.1%
+Memory Usage: 65.4%
+Latency P95: 44.6ms
+Throughput: 715.2 msg/s
+Error Rate: 0.042
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "route_optimization",
+  "parameters": {
+    "algorithm": "batman_enhanced",
+    "recalculate_interval": 15,
+    "consider_latency": true,
+    "consider_bandwidth": true,
+    "priority": "high"
+  },
+  "confidence": 0.85,
+  "reasoning": "Network topology or performance metrics indicate suboptimal routing paths"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 54
+Connections: 20
+CPU Usage: 60.8%
+Memory Usage: 55.0%
+Latency P95: 80.1ms
+Throughput: 327.3 msg/s
+Error Rate: 0.047
+Security Alerts: 1
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 43
+Connections: 11
+CPU Usage: 55.3%
+Memory Usage: 64.9%
+Latency P95: 63.0ms
+Throughput: 634.0 msg/s
+Error Rate: 0.226
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "route_optimization",
+  "parameters": {
+    "algorithm": "batman_enhanced",
+    "recalculate_interval": 15,
+    "consider_latency": true,
+    "consider_bandwidth": true,
+    "priority": "high"
+  },
+  "confidence": 0.95,
+  "reasoning": "Network topology or performance metrics indicate suboptimal routing paths"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 74
+Connections: 15
+CPU Usage: 76.0%
+Memory Usage: 74.4%
+Latency P95: 87.5ms
+Throughput: 671.5 msg/s
+Error Rate: 0.004
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 48
+Connections: 15
+CPU Usage: 61.4%
+Memory Usage: 61.3%
+Latency P95: 71.7ms
+Throughput: 385.2 msg/s
+Error Rate: 0.016
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 45
+Connections: 15
+CPU Usage: 64.0%
+Memory Usage: 56.9%
+Latency P95: 56.9ms
+Throughput: 573.2 msg/s
+Error Rate: 0.007
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 48
+Connections: 15
+CPU Usage: 58.8%
+Memory Usage: 50.2%
+Latency P95: 45.9ms
+Throughput: 378.8 msg/s
+Error Rate: 0.003
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 49
+Connections: 20
+CPU Usage: 92.8%
+Memory Usage: 70.4%
+Latency P95: 69.0ms
+Throughput: 319.7 msg/s
+Error Rate: 0.014
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7999999999999999,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 49
+Connections: 15
+CPU Usage: 80.0%
+Memory Usage: 51.9%
+Latency P95: 52.6ms
+Throughput: 559.9 msg/s
+Error Rate: 0.008
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 49
+Connections: 20
+CPU Usage: 76.0%
+Memory Usage: 62.5%
+Latency P95: 85.9ms
+Throughput: 251.8 msg/s
+Error Rate: 0.001
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "connection_management",
+  "parameters": {
+    "optimize_pools": true,
+    "close_idle": true,
+    "rebalance_connections": true
+  },
+  "confidence": 0.75,
+  "reasoning": "Connection pool optimization needed for better resource utilization"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 50
+Connections: 15
+CPU Usage: 54.0%
+Memory Usage: 53.2%
+Latency P95: 50.1ms
+Throughput: 648.5 msg/s
+Error Rate: 0.030
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 46
+Connections: 20
+CPU Usage: 90.1%
+Memory Usage: 70.1%
+Latency P95: 124.2ms
+Throughput: 220.2 msg/s
+Error Rate: 0.006
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "connection_management",
+  "parameters": {
+    "optimize_pools": true,
+    "close_idle": true,
+    "rebalance_connections": true
+  },
+  "confidence": 0.85,
+  "reasoning": "Connection pool optimization needed for better resource utilization"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 52
+Connections: 20
+CPU Usage: 79.1%
+Memory Usage: 73.1%
+Latency P95: 91.1ms
+Throughput: 100.0 msg/s
+Error Rate: 0.009
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "connection_management",
+  "parameters": {
+    "optimize_pools": true,
+    "close_idle": true,
+    "rebalance_connections": true
+  },
+  "confidence": 0.75,
+  "reasoning": "Connection pool optimization needed for better resource utilization"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 46
+Connections: 11
+CPU Usage: 73.5%
+Memory Usage: 68.3%
+Latency P95: 34.4ms
+Throughput: 640.7 msg/s
+Error Rate: 0.040
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 54
+Connections: 15
+CPU Usage: 66.3%
+Memory Usage: 85.3%
+Latency P95: 99.9ms
+Throughput: 126.9 msg/s
+Error Rate: 0.006
+Security Alerts: 2
+Threat Level: high
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 46
+Connections: 20
+CPU Usage: 74.7%
+Memory Usage: 60.9%
+Latency P95: 98.1ms
+Throughput: 400.8 msg/s
+Error Rate: 0.012
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 79
+Connections: 15
+CPU Usage: 59.9%
+Memory Usage: 54.5%
+Latency P95: 69.8ms
+Throughput: 561.5 msg/s
+Error Rate: 0.005
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "resource_scaling",
+  "parameters": {
+    "scale_direction": "up",
+    "scale_factor": 1.2,
+    "components": [
+      "connections",
+      "bandwidth"
+    ]
+  },
+  "confidence": 0.8,
+  "reasoning": "Resource utilization approaching capacity limits"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 73
+Connections: 15
+CPU Usage: 67.7%
+Memory Usage: 70.2%
+Latency P95: 76.0ms
+Throughput: 292.0 msg/s
+Error Rate: 0.012
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "resource_scaling",
+  "parameters": {
+    "scale_direction": "up",
+    "scale_factor": 1.2,
+    "components": [
+      "connections",
+      "bandwidth"
+    ]
+  },
+  "confidence": 0.8,
+  "reasoning": "Resource utilization approaching capacity limits"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 51
+Connections: 15
+CPU Usage: 77.9%
+Memory Usage: 75.5%
+Latency P95: 93.3ms
+Throughput: 100.0 msg/s
+Error Rate: 0.153
+Security Alerts: 2
+Threat Level: high
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "security_response",
+  "parameters": {
+    "response_level": "medium",
+    "enable_filtering": true,
+    "quarantine_suspicious": true,
+    "alert_administrators": true
+  },
+  "confidence": 0.95,
+  "reasoning": "Security threat detected requiring immediate response"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 51
+Connections: 15
+CPU Usage: 55.6%
+Memory Usage: 57.7%
+Latency P95: 67.7ms
+Throughput: 435.8 msg/s
+Error Rate: 0.000
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 53
+Connections: 15
+CPU Usage: 64.7%
+Memory Usage: 61.7%
+Latency P95: 92.9ms
+Throughput: 459.0 msg/s
+Error Rate: 0.001
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 52
+Connections: 20
+CPU Usage: 66.1%
+Memory Usage: 71.3%
+Latency P95: 101.8ms
+Throughput: 100.0 msg/s
+Error Rate: 0.005
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "load_balancing",
+  "parameters": {
+    "strategy": "adaptive_weighted",
+    "rebalance_threshold": 0.7,
+    "consider_node_capacity": true
+  },
+  "confidence": 0.9,
+  "reasoning": "Uneven load distribution detected across network nodes"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 40
+Connections: 11
+CPU Usage: 76.3%
+Memory Usage: 64.7%
+Latency P95: 77.6ms
+Throughput: 180.2 msg/s
+Error Rate: 0.062
+Security Alerts: 1
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "route_optimization",
+  "parameters": {
+    "algorithm": "batman_enhanced",
+    "recalculate_interval": 15,
+    "consider_latency": true,
+    "consider_bandwidth": true,
+    "priority": "high"
+  },
+  "confidence": 0.85,
+  "reasoning": "Network topology or performance metrics indicate suboptimal routing paths"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 49
+Connections: 15
+CPU Usage: 68.9%
+Memory Usage: 65.6%
+Latency P95: 64.0ms
+Throughput: 100.0 msg/s
+Error Rate: 0.011
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "route_optimization",
+  "parameters": {
+    "algorithm": "batman_enhanced",
+    "recalculate_interval": 15,
+    "consider_latency": true,
+    "consider_bandwidth": true,
+    "priority": "high"
+  },
+  "confidence": 0.85,
+  "reasoning": "Network topology or performance metrics indicate suboptimal routing paths"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 51
+Connections: 20
+CPU Usage: 67.6%
+Memory Usage: 72.8%
+Latency P95: 97.3ms
+Throughput: 755.2 msg/s
+Error Rate: 0.024
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "load_balancing",
+  "parameters": {
+    "strategy": "adaptive_weighted",
+    "rebalance_threshold": 0.7,
+    "consider_node_capacity": true
+  },
+  "confidence": 0.9,
+  "reasoning": "Uneven load distribution detected across network nodes"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 45
+Connections: 15
+CPU Usage: 48.4%
+Memory Usage: 65.7%
+Latency P95: 49.9ms
+Throughput: 578.2 msg/s
+Error Rate: 0.017
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 46
+Connections: 11
+CPU Usage: 71.3%
+Memory Usage: 60.6%
+Latency P95: 59.9ms
+Throughput: 338.1 msg/s
+Error Rate: 0.156
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "route_optimization",
+  "parameters": {
+    "algorithm": "batman_enhanced",
+    "recalculate_interval": 15,
+    "consider_latency": true,
+    "consider_bandwidth": true,
+    "priority": "high"
+  },
+  "confidence": 0.95,
+  "reasoning": "Network topology or performance metrics indicate suboptimal routing paths"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 50
+Connections: 15
+CPU Usage: 59.4%
+Memory Usage: 54.2%
+Latency P95: 37.2ms
+Throughput: 521.7 msg/s
+Error Rate: 0.010
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 46
+Connections: 15
+CPU Usage: 61.3%
+Memory Usage: 65.1%
+Latency P95: 92.3ms
+Throughput: 535.9 msg/s
+Error Rate: 0.025
+Security Alerts: 1
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 52
+Connections: 20
+CPU Usage: 69.6%
+Memory Usage: 78.2%
+Latency P95: 115.3ms
+Throughput: 291.3 msg/s
+Error Rate: 0.141
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "connection_management",
+  "parameters": {
+    "optimize_pools": true,
+    "close_idle": true,
+    "rebalance_connections": true
+  },
+  "confidence": 0.85,
+  "reasoning": "Connection pool optimization needed for better resource utilization"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 45
+Connections: 15
+CPU Usage: 56.4%
+Memory Usage: 49.0%
+Latency P95: 61.1ms
+Throughput: 790.4 msg/s
+Error Rate: 0.005
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 49
+Connections: 11
+CPU Usage: 52.6%
+Memory Usage: 55.2%
+Latency P95: 65.8ms
+Throughput: 924.2 msg/s
+Error Rate: 0.040
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "route_optimization",
+  "parameters": {
+    "algorithm": "batman_enhanced",
+    "recalculate_interval": 15,
+    "consider_latency": true,
+    "consider_bandwidth": true,
+    "priority": "high"
+  },
+  "confidence": 0.85,
+  "reasoning": "Network topology or performance metrics indicate suboptimal routing paths"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 54
+Connections: 15
+CPU Usage: 80.5%
+Memory Usage: 88.6%
+Latency P95: 92.8ms
+Throughput: 258.3 msg/s
+Error Rate: 0.020
+Security Alerts: 2
+Threat Level: high
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 49
+Connections: 15
+CPU Usage: 76.2%
+Memory Usage: 82.0%
+Latency P95: 77.2ms
+Throughput: 145.3 msg/s
+Error Rate: 0.013
+Security Alerts: 2
+Threat Level: high
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 71
+Connections: 15
+CPU Usage: 52.2%
+Memory Usage: 63.6%
+Latency P95: 94.8ms
+Throughput: 573.6 msg/s
+Error Rate: 0.021
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 52
+Connections: 15
+CPU Usage: 56.9%
+Memory Usage: 56.6%
+Latency P95: 66.2ms
+Throughput: 766.1 msg/s
+Error Rate: 0.000
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 49
+Connections: 15
+CPU Usage: 64.0%
+Memory Usage: 69.4%
+Latency P95: 44.1ms
+Throughput: 497.8 msg/s
+Error Rate: 0.016
+Security Alerts: 1
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 47
+Connections: 15
+CPU Usage: 50.3%
+Memory Usage: 71.5%
+Latency P95: 111.7ms
+Throughput: 297.0 msg/s
+Error Rate: 0.129
+Security Alerts: 2
+Threat Level: high
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7999999999999999,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 47
+Connections: 11
+CPU Usage: 51.0%
+Memory Usage: 60.2%
+Latency P95: 60.0ms
+Throughput: 761.4 msg/s
+Error Rate: 0.376
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7999999999999999,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 40
+Connections: 11
+CPU Usage: 49.8%
+Memory Usage: 47.4%
+Latency P95: 73.0ms
+Throughput: 656.8 msg/s
+Error Rate: 0.482
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7999999999999999,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 49
+Connections: 15
+CPU Usage: 81.8%
+Memory Usage: 63.2%
+Latency P95: 61.5ms
+Throughput: 627.9 msg/s
+Error Rate: 0.004
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 47
+Connections: 20
+CPU Usage: 59.9%
+Memory Usage: 75.3%
+Latency P95: 96.8ms
+Throughput: 593.1 msg/s
+Error Rate: 0.020
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "connection_management",
+  "parameters": {
+    "optimize_pools": true,
+    "close_idle": true,
+    "rebalance_connections": true
+  },
+  "confidence": 0.75,
+  "reasoning": "Connection pool optimization needed for better resource utilization"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 47
+Connections: 15
+CPU Usage: 71.2%
+Memory Usage: 77.9%
+Latency P95: 92.8ms
+Throughput: 143.3 msg/s
+Error Rate: 0.021
+Security Alerts: 2
+Threat Level: high
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "security_response",
+  "parameters": {
+    "response_level": "medium",
+    "enable_filtering": true,
+    "quarantine_suspicious": true,
+    "alert_administrators": true
+  },
+  "confidence": 0.95,
+  "reasoning": "Security threat detected requiring immediate response"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 42
+Connections: 11
+CPU Usage: 69.7%
+Memory Usage: 53.8%
+Latency P95: 77.4ms
+Throughput: 532.2 msg/s
+Error Rate: 0.074
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 43
+Connections: 11
+CPU Usage: 47.1%
+Memory Usage: 55.5%
+Latency P95: 81.6ms
+Throughput: 686.0 msg/s
+Error Rate: 0.025
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 49
+Connections: 20
+CPU Usage: 79.6%
+Memory Usage: 68.5%
+Latency P95: 68.7ms
+Throughput: 100.0 msg/s
+Error Rate: 0.058
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 55
+Connections: 15
+CPU Usage: 66.4%
+Memory Usage: 62.0%
+Latency P95: 82.3ms
+Throughput: 348.7 msg/s
+Error Rate: 0.008
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 50
+Connections: 11
+CPU Usage: 64.0%
+Memory Usage: 55.8%
+Latency P95: 67.6ms
+Throughput: 626.6 msg/s
+Error Rate: 0.110
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "route_optimization",
+  "parameters": {
+    "algorithm": "batman_enhanced",
+    "recalculate_interval": 15,
+    "consider_latency": true,
+    "consider_bandwidth": true,
+    "priority": "high"
+  },
+  "confidence": 0.95,
+  "reasoning": "Network topology or performance metrics indicate suboptimal routing paths"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 52
+Connections: 15
+CPU Usage: 88.5%
+Memory Usage: 87.2%
+Latency P95: 86.6ms
+Throughput: 291.3 msg/s
+Error Rate: 0.014
+Security Alerts: 2
+Threat Level: high
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 50
+Connections: 15
+CPU Usage: 70.6%
+Memory Usage: 68.1%
+Latency P95: 73.6ms
+Throughput: 441.7 msg/s
+Error Rate: 0.040
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "route_optimization",
+  "parameters": {
+    "algorithm": "batman_enhanced",
+    "recalculate_interval": 15,
+    "consider_latency": true,
+    "consider_bandwidth": true,
+    "priority": "high"
+  },
+  "confidence": 0.85,
+  "reasoning": "Network topology or performance metrics indicate suboptimal routing paths"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 48
+Connections: 15
+CPU Usage: 80.2%
+Memory Usage: 72.4%
+Latency P95: 78.6ms
+Throughput: 283.3 msg/s
+Error Rate: 0.066
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "route_optimization",
+  "parameters": {
+    "algorithm": "batman_enhanced",
+    "recalculate_interval": 15,
+    "consider_latency": true,
+    "consider_bandwidth": true,
+    "priority": "high"
+  },
+  "confidence": 0.85,
+  "reasoning": "Network topology or performance metrics indicate suboptimal routing paths"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 48
+Connections: 11
+CPU Usage: 47.8%
+Memory Usage: 70.6%
+Latency P95: 48.6ms
+Throughput: 596.9 msg/s
+Error Rate: 0.030
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "route_optimization",
+  "parameters": {
+    "algorithm": "batman_enhanced",
+    "recalculate_interval": 15,
+    "consider_latency": true,
+    "consider_bandwidth": true,
+    "priority": "high"
+  },
+  "confidence": 0.85,
+  "reasoning": "Network topology or performance metrics indicate suboptimal routing paths"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 55
+Connections: 20
+CPU Usage: 70.1%
+Memory Usage: 60.9%
+Latency P95: 95.2ms
+Throughput: 220.5 msg/s
+Error Rate: 0.011
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "connection_management",
+  "parameters": {
+    "optimize_pools": true,
+    "close_idle": true,
+    "rebalance_connections": true
+  },
+  "confidence": 0.75,
+  "reasoning": "Connection pool optimization needed for better resource utilization"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 40
+Connections: 11
+CPU Usage: 73.5%
+Memory Usage: 75.1%
+Latency P95: 71.2ms
+Throughput: 434.2 msg/s
+Error Rate: 0.026
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "route_optimization",
+  "parameters": {
+    "algorithm": "batman_enhanced",
+    "recalculate_interval": 15,
+    "consider_latency": true,
+    "consider_bandwidth": true,
+    "priority": "high"
+  },
+  "confidence": 0.85,
+  "reasoning": "Network topology or performance metrics indicate suboptimal routing paths"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 48
+Connections: 15
+CPU Usage: 53.7%
+Memory Usage: 53.1%
+Latency P95: 61.2ms
+Throughput: 468.8 msg/s
+Error Rate: 0.003
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 48
+Connections: 15
+CPU Usage: 54.7%
+Memory Usage: 48.7%
+Latency P95: 67.1ms
+Throughput: 707.6 msg/s
+Error Rate: 0.007
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 79
+Connections: 15
+CPU Usage: 59.6%
+Memory Usage: 41.1%
+Latency P95: 52.0ms
+Throughput: 756.1 msg/s
+Error Rate: 0.048
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 46
+Connections: 15
+CPU Usage: 80.9%
+Memory Usage: 68.1%
+Latency P95: 111.6ms
+Throughput: 319.1 msg/s
+Error Rate: 0.037
+Security Alerts: 2
+Threat Level: high
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 48
+Connections: 20
+CPU Usage: 61.7%
+Memory Usage: 65.5%
+Latency P95: 68.2ms
+Throughput: 268.8 msg/s
+Error Rate: 0.009
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "load_balancing",
+  "parameters": {
+    "strategy": "adaptive_weighted",
+    "rebalance_threshold": 0.7,
+    "consider_node_capacity": true
+  },
+  "confidence": 0.9,
+  "reasoning": "Uneven load distribution detected across network nodes"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 49
+Connections: 15
+CPU Usage: 84.6%
+Memory Usage: 73.0%
+Latency P95: 107.7ms
+Throughput: 159.1 msg/s
+Error Rate: 0.007
+Security Alerts: 2
+Threat Level: high
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 48
+Connections: 15
+CPU Usage: 55.8%
+Memory Usage: 59.6%
+Latency P95: 73.5ms
+Throughput: 634.4 msg/s
+Error Rate: 0.020
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 46
+Connections: 20
+CPU Usage: 79.9%
+Memory Usage: 84.2%
+Latency P95: 131.6ms
+Throughput: 465.0 msg/s
+Error Rate: 0.011
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 54
+Connections: 15
+CPU Usage: 69.2%
+Memory Usage: 86.2%
+Latency P95: 71.8ms
+Throughput: 170.7 msg/s
+Error Rate: 0.034
+Security Alerts: 2
+Threat Level: high
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 50
+Connections: 20
+CPU Usage: 74.0%
+Memory Usage: 76.8%
+Latency P95: 106.9ms
+Throughput: 496.4 msg/s
+Error Rate: 0.028
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 40
+Connections: 11
+CPU Usage: 69.7%
+Memory Usage: 54.1%
+Latency P95: 67.2ms
+Throughput: 595.3 msg/s
+Error Rate: 0.009
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 55
+Connections: 20
+CPU Usage: 79.1%
+Memory Usage: 74.7%
+Latency P95: 90.4ms
+Throughput: 327.4 msg/s
+Error Rate: 0.009
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "load_balancing",
+  "parameters": {
+    "strategy": "adaptive_weighted",
+    "rebalance_threshold": 0.7,
+    "consider_node_capacity": true
+  },
+  "confidence": 0.9,
+  "reasoning": "Uneven load distribution detected across network nodes"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 47
+Connections: 15
+CPU Usage: 100.0%
+Memory Usage: 73.7%
+Latency P95: 96.2ms
+Throughput: 330.0 msg/s
+Error Rate: 0.005
+Security Alerts: 2
+Threat Level: high
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "security_response",
+  "parameters": {
+    "response_level": "medium",
+    "enable_filtering": true,
+    "quarantine_suspicious": true,
+    "alert_administrators": true
+  },
+  "confidence": 0.95,
+  "reasoning": "Security threat detected requiring immediate response"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 47
+Connections: 15
+CPU Usage: 80.0%
+Memory Usage: 75.8%
+Latency P95: 88.7ms
+Throughput: 100.0 msg/s
+Error Rate: 0.001
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "load_balancing",
+  "parameters": {
+    "strategy": "adaptive_weighted",
+    "rebalance_threshold": 0.7,
+    "consider_node_capacity": true
+  },
+  "confidence": 0.9,
+  "reasoning": "Uneven load distribution detected across network nodes"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 48
+Connections: 11
+CPU Usage: 76.6%
+Memory Usage: 61.0%
+Latency P95: 50.3ms
+Throughput: 462.5 msg/s
+Error Rate: 0.111
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "route_optimization",
+  "parameters": {
+    "algorithm": "batman_enhanced",
+    "recalculate_interval": 15,
+    "consider_latency": true,
+    "consider_bandwidth": true,
+    "priority": "high"
+  },
+  "confidence": 0.95,
+  "reasoning": "Network topology or performance metrics indicate suboptimal routing paths"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 55
+Connections: 15
+CPU Usage: 76.4%
+Memory Usage: 70.1%
+Latency P95: 67.1ms
+Throughput: 140.7 msg/s
+Error Rate: 0.012
+Security Alerts: 2
+Threat Level: high
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 47
+Connections: 20
+CPU Usage: 71.6%
+Memory Usage: 76.8%
+Latency P95: 89.2ms
+Throughput: 100.0 msg/s
+Error Rate: 0.026
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 48
+Connections: 15
+CPU Usage: 55.7%
+Memory Usage: 71.2%
+Latency P95: 73.8ms
+Throughput: 457.3 msg/s
+Error Rate: 0.010
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 50
+Connections: 15
+CPU Usage: 60.0%
+Memory Usage: 71.0%
+Latency P95: 77.3ms
+Throughput: 896.2 msg/s
+Error Rate: 0.001
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 45
+Connections: 15
+CPU Usage: 41.6%
+Memory Usage: 38.1%
+Latency P95: 50.6ms
+Throughput: 493.7 msg/s
+Error Rate: 0.003
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 55
+Connections: 15
+CPU Usage: 77.5%
+Memory Usage: 53.6%
+Latency P95: 68.6ms
+Throughput: 953.5 msg/s
+Error Rate: 0.002
+Security Alerts: 1
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 40
+Connections: 11
+CPU Usage: 76.1%
+Memory Usage: 52.3%
+Latency P95: 85.3ms
+Throughput: 574.9 msg/s
+Error Rate: 0.084
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "route_optimization",
+  "parameters": {
+    "algorithm": "batman_enhanced",
+    "recalculate_interval": 15,
+    "consider_latency": true,
+    "consider_bandwidth": true,
+    "priority": "high"
+  },
+  "confidence": 0.85,
+  "reasoning": "Network topology or performance metrics indicate suboptimal routing paths"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 40
+Connections: 11
+CPU Usage: 69.9%
+Memory Usage: 53.1%
+Latency P95: 87.7ms
+Throughput: 609.5 msg/s
+Error Rate: 0.158
+Security Alerts: 1
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "route_optimization",
+  "parameters": {
+    "algorithm": "batman_enhanced",
+    "recalculate_interval": 15,
+    "consider_latency": true,
+    "consider_bandwidth": true,
+    "priority": "high"
+  },
+  "confidence": 0.95,
+  "reasoning": "Network topology or performance metrics indicate suboptimal routing paths"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 49
+Connections: 15
+CPU Usage: 69.8%
+Memory Usage: 78.0%
+Latency P95: 82.9ms
+Throughput: 409.0 msg/s
+Error Rate: 0.011
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "route_optimization",
+  "parameters": {
+    "algorithm": "batman_enhanced",
+    "recalculate_interval": 15,
+    "consider_latency": true,
+    "consider_bandwidth": true,
+    "priority": "high"
+  },
+  "confidence": 0.85,
+  "reasoning": "Network topology or performance metrics indicate suboptimal routing paths"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 46
+Connections: 15
+CPU Usage: 51.6%
+Memory Usage: 50.2%
+Latency P95: 63.0ms
+Throughput: 557.8 msg/s
+Error Rate: 0.005
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 47
+Connections: 20
+CPU Usage: 71.8%
+Memory Usage: 65.7%
+Latency P95: 88.9ms
+Throughput: 110.1 msg/s
+Error Rate: 0.004
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "connection_management",
+  "parameters": {
+    "optimize_pools": true,
+    "close_idle": true,
+    "rebalance_connections": true
+  },
+  "confidence": 0.75,
+  "reasoning": "Connection pool optimization needed for better resource utilization"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 45
+Connections: 11
+CPU Usage: 61.9%
+Memory Usage: 49.4%
+Latency P95: 56.0ms
+Throughput: 525.8 msg/s
+Error Rate: 0.280
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7999999999999999,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 55
+Connections: 15
+CPU Usage: 72.8%
+Memory Usage: 70.5%
+Latency P95: 107.6ms
+Throughput: 332.6 msg/s
+Error Rate: 0.068
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "route_optimization",
+  "parameters": {
+    "algorithm": "batman_enhanced",
+    "recalculate_interval": 15,
+    "consider_latency": true,
+    "consider_bandwidth": true,
+    "priority": "high"
+  },
+  "confidence": 0.85,
+  "reasoning": "Network topology or performance metrics indicate suboptimal routing paths"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 46
+Connections: 15
+CPU Usage: 61.2%
+Memory Usage: 73.3%
+Latency P95: 88.3ms
+Throughput: 282.6 msg/s
+Error Rate: 0.005
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "load_balancing",
+  "parameters": {
+    "strategy": "adaptive_weighted",
+    "rebalance_threshold": 0.7,
+    "consider_node_capacity": true
+  },
+  "confidence": 0.9,
+  "reasoning": "Uneven load distribution detected across network nodes"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 49
+Connections: 15
+CPU Usage: 77.2%
+Memory Usage: 70.8%
+Latency P95: 81.6ms
+Throughput: 407.2 msg/s
+Error Rate: 0.062
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "route_optimization",
+  "parameters": {
+    "algorithm": "batman_enhanced",
+    "recalculate_interval": 15,
+    "consider_latency": true,
+    "consider_bandwidth": true,
+    "priority": "high"
+  },
+  "confidence": 0.85,
+  "reasoning": "Network topology or performance metrics indicate suboptimal routing paths"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 53
+Connections: 15
+CPU Usage: 75.5%
+Memory Usage: 73.4%
+Latency P95: 95.4ms
+Throughput: 143.0 msg/s
+Error Rate: 0.001
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "load_balancing",
+  "parameters": {
+    "strategy": "adaptive_weighted",
+    "rebalance_threshold": 0.7,
+    "consider_node_capacity": true
+  },
+  "confidence": 0.9,
+  "reasoning": "Uneven load distribution detected across network nodes"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 54
+Connections: 15
+CPU Usage: 71.2%
+Memory Usage: 62.6%
+Latency P95: 42.0ms
+Throughput: 457.4 msg/s
+Error Rate: 0.007
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 48
+Connections: 15
+CPU Usage: 63.6%
+Memory Usage: 55.7%
+Latency P95: 42.9ms
+Throughput: 290.3 msg/s
+Error Rate: 0.019
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 45
+Connections: 15
+CPU Usage: 77.3%
+Memory Usage: 93.2%
+Latency P95: 107.0ms
+Throughput: 567.0 msg/s
+Error Rate: 0.006
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "route_optimization",
+  "parameters": {
+    "algorithm": "batman_enhanced",
+    "recalculate_interval": 15,
+    "consider_latency": true,
+    "consider_bandwidth": true,
+    "priority": "high"
+  },
+  "confidence": 0.85,
+  "reasoning": "Network topology or performance metrics indicate suboptimal routing paths"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 50
+Connections: 11
+CPU Usage: 45.9%
+Memory Usage: 64.3%
+Latency P95: 84.7ms
+Throughput: 789.7 msg/s
+Error Rate: 0.048
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "route_optimization",
+  "parameters": {
+    "algorithm": "batman_enhanced",
+    "recalculate_interval": 15,
+    "consider_latency": true,
+    "consider_bandwidth": true,
+    "priority": "high"
+  },
+  "confidence": 0.85,
+  "reasoning": "Network topology or performance metrics indicate suboptimal routing paths"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 42
+Connections: 11
+CPU Usage: 56.9%
+Memory Usage: 48.9%
+Latency P95: 63.9ms
+Throughput: 392.9 msg/s
+Error Rate: 0.146
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7999999999999999,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 53
+Connections: 15
+CPU Usage: 73.0%
+Memory Usage: 78.8%
+Latency P95: 74.0ms
+Throughput: 466.9 msg/s
+Error Rate: 0.003
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "route_optimization",
+  "parameters": {
+    "algorithm": "batman_enhanced",
+    "recalculate_interval": 15,
+    "consider_latency": true,
+    "consider_bandwidth": true,
+    "priority": "high"
+  },
+  "confidence": 0.85,
+  "reasoning": "Network topology or performance metrics indicate suboptimal routing paths"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 41
+Connections: 11
+CPU Usage: 64.3%
+Memory Usage: 60.8%
+Latency P95: 39.8ms
+Throughput: 359.7 msg/s
+Error Rate: 0.124
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "route_optimization",
+  "parameters": {
+    "algorithm": "batman_enhanced",
+    "recalculate_interval": 15,
+    "consider_latency": true,
+    "consider_bandwidth": true,
+    "priority": "high"
+  },
+  "confidence": 0.95,
+  "reasoning": "Network topology or performance metrics indicate suboptimal routing paths"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 52
+Connections: 15
+CPU Usage: 73.4%
+Memory Usage: 76.2%
+Latency P95: 80.3ms
+Throughput: 293.7 msg/s
+Error Rate: 0.001
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 55
+Connections: 15
+CPU Usage: 70.5%
+Memory Usage: 70.0%
+Latency P95: 81.3ms
+Throughput: 100.0 msg/s
+Error Rate: 0.049
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "route_optimization",
+  "parameters": {
+    "algorithm": "batman_enhanced",
+    "recalculate_interval": 15,
+    "consider_latency": true,
+    "consider_bandwidth": true,
+    "priority": "high"
+  },
+  "confidence": 0.85,
+  "reasoning": "Network topology or performance metrics indicate suboptimal routing paths"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 53
+Connections: 15
+CPU Usage: 51.4%
+Memory Usage: 65.2%
+Latency P95: 58.6ms
+Throughput: 606.3 msg/s
+Error Rate: 0.005
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 45
+Connections: 20
+CPU Usage: 97.9%
+Memory Usage: 68.8%
+Latency P95: 89.7ms
+Throughput: 372.1 msg/s
+Error Rate: 0.017
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7999999999999999,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 50
+Connections: 11
+CPU Usage: 66.7%
+Memory Usage: 51.3%
+Latency P95: 57.7ms
+Throughput: 500.4 msg/s
+Error Rate: 0.261
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7999999999999999,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 53
+Connections: 20
+CPU Usage: 84.6%
+Memory Usage: 75.8%
+Latency P95: 93.8ms
+Throughput: 305.0 msg/s
+Error Rate: 0.006
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "load_balancing",
+  "parameters": {
+    "strategy": "adaptive_weighted",
+    "rebalance_threshold": 0.7,
+    "consider_node_capacity": true
+  },
+  "confidence": 0.9,
+  "reasoning": "Uneven load distribution detected across network nodes"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 52
+Connections: 15
+CPU Usage: 49.4%
+Memory Usage: 54.2%
+Latency P95: 82.8ms
+Throughput: 1103.3 msg/s
+Error Rate: 0.009
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 50
+Connections: 15
+CPU Usage: 80.5%
+Memory Usage: 64.7%
+Latency P95: 72.3ms
+Throughput: 453.1 msg/s
+Error Rate: 0.011
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "load_balancing",
+  "parameters": {
+    "strategy": "adaptive_weighted",
+    "rebalance_threshold": 0.7,
+    "consider_node_capacity": true
+  },
+  "confidence": 0.9,
+  "reasoning": "Uneven load distribution detected across network nodes"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 77
+Connections: 15
+CPU Usage: 53.0%
+Memory Usage: 48.3%
+Latency P95: 52.6ms
+Throughput: 483.6 msg/s
+Error Rate: 0.004
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 71
+Connections: 15
+CPU Usage: 72.4%
+Memory Usage: 66.8%
+Latency P95: 93.8ms
+Throughput: 815.5 msg/s
+Error Rate: 0.009
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "resource_scaling",
+  "parameters": {
+    "scale_direction": "up",
+    "scale_factor": 1.2,
+    "components": [
+      "connections",
+      "bandwidth"
+    ]
+  },
+  "confidence": 0.8,
+  "reasoning": "Resource utilization approaching capacity limits"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 47
+Connections: 11
+CPU Usage: 70.4%
+Memory Usage: 50.3%
+Latency P95: 62.5ms
+Throughput: 554.9 msg/s
+Error Rate: 0.108
+Security Alerts: 1
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "route_optimization",
+  "parameters": {
+    "algorithm": "batman_enhanced",
+    "recalculate_interval": 15,
+    "consider_latency": true,
+    "consider_bandwidth": true,
+    "priority": "high"
+  },
+  "confidence": 0.95,
+  "reasoning": "Network topology or performance metrics indicate suboptimal routing paths"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 52
+Connections: 15
+CPU Usage: 48.9%
+Memory Usage: 59.1%
+Latency P95: 57.5ms
+Throughput: 691.5 msg/s
+Error Rate: 0.002
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 75
+Connections: 15
+CPU Usage: 70.7%
+Memory Usage: 66.7%
+Latency P95: 61.0ms
+Throughput: 295.4 msg/s
+Error Rate: 0.024
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 47
+Connections: 11
+CPU Usage: 54.5%
+Memory Usage: 61.1%
+Latency P95: 72.2ms
+Throughput: 518.4 msg/s
+Error Rate: 0.176
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7999999999999999,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 49
+Connections: 11
+CPU Usage: 54.4%
+Memory Usage: 58.7%
+Latency P95: 63.7ms
+Throughput: 542.3 msg/s
+Error Rate: 0.129
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7999999999999999,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 49
+Connections: 15
+CPU Usage: 30.5%
+Memory Usage: 56.5%
+Latency P95: 79.7ms
+Throughput: 745.4 msg/s
+Error Rate: 0.025
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 51
+Connections: 20
+CPU Usage: 59.7%
+Memory Usage: 73.9%
+Latency P95: 59.3ms
+Throughput: 152.5 msg/s
+Error Rate: 0.032
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 48
+Connections: 15
+CPU Usage: 69.2%
+Memory Usage: 73.8%
+Latency P95: 59.9ms
+Throughput: 219.6 msg/s
+Error Rate: 0.020
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "route_optimization",
+  "parameters": {
+    "algorithm": "batman_enhanced",
+    "recalculate_interval": 15,
+    "consider_latency": true,
+    "consider_bandwidth": true,
+    "priority": "high"
+  },
+  "confidence": 0.85,
+  "reasoning": "Network topology or performance metrics indicate suboptimal routing paths"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 78
+Connections: 15
+CPU Usage: 79.4%
+Memory Usage: 57.6%
+Latency P95: 60.2ms
+Throughput: 848.5 msg/s
+Error Rate: 0.013
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "resource_scaling",
+  "parameters": {
+    "scale_direction": "up",
+    "scale_factor": 1.2,
+    "components": [
+      "connections",
+      "bandwidth"
+    ]
+  },
+  "confidence": 0.8,
+  "reasoning": "Resource utilization approaching capacity limits"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 50
+Connections: 15
+CPU Usage: 77.9%
+Memory Usage: 74.4%
+Latency P95: 83.8ms
+Throughput: 516.6 msg/s
+Error Rate: 0.011
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "route_optimization",
+  "parameters": {
+    "algorithm": "batman_enhanced",
+    "recalculate_interval": 15,
+    "consider_latency": true,
+    "consider_bandwidth": true,
+    "priority": "high"
+  },
+  "confidence": 0.85,
+  "reasoning": "Network topology or performance metrics indicate suboptimal routing paths"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 45
+Connections: 11
+CPU Usage: 55.0%
+Memory Usage: 61.1%
+Latency P95: 38.9ms
+Throughput: 544.7 msg/s
+Error Rate: 0.120
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "route_optimization",
+  "parameters": {
+    "algorithm": "batman_enhanced",
+    "recalculate_interval": 15,
+    "consider_latency": true,
+    "consider_bandwidth": true,
+    "priority": "high"
+  },
+  "confidence": 0.95,
+  "reasoning": "Network topology or performance metrics indicate suboptimal routing paths"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 55
+Connections: 15
+CPU Usage: 67.9%
+Memory Usage: 75.1%
+Latency P95: 128.7ms
+Throughput: 100.0 msg/s
+Error Rate: 0.003
+Security Alerts: 2
+Threat Level: high
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 46
+Connections: 15
+CPU Usage: 89.4%
+Memory Usage: 82.3%
+Latency P95: 101.1ms
+Throughput: 357.4 msg/s
+Error Rate: 0.034
+Security Alerts: 2
+Threat Level: high
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 48
+Connections: 15
+CPU Usage: 86.0%
+Memory Usage: 72.4%
+Latency P95: 106.6ms
+Throughput: 167.4 msg/s
+Error Rate: 0.007
+Security Alerts: 2
+Threat Level: high
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 53
+Connections: 15
+CPU Usage: 56.4%
+Memory Usage: 54.8%
+Latency P95: 60.5ms
+Throughput: 454.3 msg/s
+Error Rate: 0.006
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 50
+Connections: 20
+CPU Usage: 82.4%
+Memory Usage: 70.3%
+Latency P95: 113.6ms
+Throughput: 845.8 msg/s
+Error Rate: 0.001
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "load_balancing",
+  "parameters": {
+    "strategy": "adaptive_weighted",
+    "rebalance_threshold": 0.7,
+    "consider_node_capacity": true
+  },
+  "confidence": 0.9,
+  "reasoning": "Uneven load distribution detected across network nodes"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 45
+Connections: 15
+CPU Usage: 28.6%
+Memory Usage: 59.9%
+Latency P95: 45.2ms
+Throughput: 1000.3 msg/s
+Error Rate: 0.028
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 51
+Connections: 15
+CPU Usage: 67.7%
+Memory Usage: 74.2%
+Latency P95: 91.9ms
+Throughput: 485.4 msg/s
+Error Rate: 0.023
+Security Alerts: 1
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "route_optimization",
+  "parameters": {
+    "algorithm": "batman_enhanced",
+    "recalculate_interval": 15,
+    "consider_latency": true,
+    "consider_bandwidth": true,
+    "priority": "high"
+  },
+  "confidence": 0.85,
+  "reasoning": "Network topology or performance metrics indicate suboptimal routing paths"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 51
+Connections: 15
+CPU Usage: 53.9%
+Memory Usage: 64.4%
+Latency P95: 91.5ms
+Throughput: 544.0 msg/s
+Error Rate: 0.006
+Security Alerts: 1
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "route_optimization",
+  "parameters": {
+    "algorithm": "batman_enhanced",
+    "recalculate_interval": 15,
+    "consider_latency": true,
+    "consider_bandwidth": true,
+    "priority": "high"
+  },
+  "confidence": 0.85,
+  "reasoning": "Network topology or performance metrics indicate suboptimal routing paths"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 40
+Connections: 11
+CPU Usage: 58.3%
+Memory Usage: 74.4%
+Latency P95: 75.4ms
+Throughput: 509.2 msg/s
+Error Rate: 0.268
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7999999999999999,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 50
+Connections: 15
+CPU Usage: 91.4%
+Memory Usage: 71.5%
+Latency P95: 104.1ms
+Throughput: 119.0 msg/s
+Error Rate: 0.028
+Security Alerts: 3
+Threat Level: high
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7999999999999999,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 52
+Connections: 15
+CPU Usage: 69.8%
+Memory Usage: 62.3%
+Latency P95: 58.2ms
+Throughput: 659.8 msg/s
+Error Rate: 0.012
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 49
+Connections: 11
+CPU Usage: 62.2%
+Memory Usage: 53.1%
+Latency P95: 87.2ms
+Throughput: 457.6 msg/s
+Error Rate: 0.191
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "route_optimization",
+  "parameters": {
+    "algorithm": "batman_enhanced",
+    "recalculate_interval": 15,
+    "consider_latency": true,
+    "consider_bandwidth": true,
+    "priority": "high"
+  },
+  "confidence": 0.95,
+  "reasoning": "Network topology or performance metrics indicate suboptimal routing paths"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 48
+Connections: 15
+CPU Usage: 74.9%
+Memory Usage: 73.2%
+Latency P95: 99.3ms
+Throughput: 100.4 msg/s
+Error Rate: 0.010
+Security Alerts: 2
+Threat Level: high
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 79
+Connections: 15
+CPU Usage: 62.6%
+Memory Usage: 49.0%
+Latency P95: 58.0ms
+Throughput: 1173.3 msg/s
+Error Rate: 0.007
+Security Alerts: 2
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 42
+Connections: 11
+CPU Usage: 58.5%
+Memory Usage: 47.1%
+Latency P95: 82.3ms
+Throughput: 400.3 msg/s
+Error Rate: 0.016
+Security Alerts: 1
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "route_optimization",
+  "parameters": {
+    "algorithm": "batman_enhanced",
+    "recalculate_interval": 15,
+    "consider_latency": true,
+    "consider_bandwidth": true,
+    "priority": "high"
+  },
+  "confidence": 0.85,
+  "reasoning": "Network topology or performance metrics indicate suboptimal routing paths"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 70
+Connections: 15
+CPU Usage: 48.6%
+Memory Usage: 42.0%
+Latency P95: 50.1ms
+Throughput: 344.5 msg/s
+Error Rate: 0.037
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 52
+Connections: 15
+CPU Usage: 92.7%
+Memory Usage: 76.5%
+Latency P95: 84.4ms
+Throughput: 100.0 msg/s
+Error Rate: 0.007
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "route_optimization",
+  "parameters": {
+    "algorithm": "batman_enhanced",
+    "recalculate_interval": 15,
+    "consider_latency": true,
+    "consider_bandwidth": true,
+    "priority": "high"
+  },
+  "confidence": 0.95,
+  "reasoning": "Network topology or performance metrics indicate suboptimal routing paths"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 53
+Connections: 20
+CPU Usage: 76.7%
+Memory Usage: 87.0%
+Latency P95: 72.2ms
+Throughput: 100.0 msg/s
+Error Rate: 0.005
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "connection_management",
+  "parameters": {
+    "optimize_pools": true,
+    "close_idle": true,
+    "rebalance_connections": true
+  },
+  "confidence": 0.75,
+  "reasoning": "Connection pool optimization needed for better resource utilization"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 44
+Connections: 11
+CPU Usage: 40.9%
+Memory Usage: 65.5%
+Latency P95: 75.9ms
+Throughput: 727.9 msg/s
+Error Rate: 0.025
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 43
+Connections: 11
+CPU Usage: 57.6%
+Memory Usage: 64.9%
+Latency P95: 64.1ms
+Throughput: 928.1 msg/s
+Error Rate: 0.006
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "route_optimization",
+  "parameters": {
+    "algorithm": "batman_enhanced",
+    "recalculate_interval": 15,
+    "consider_latency": true,
+    "consider_bandwidth": true,
+    "priority": "high"
+  },
+  "confidence": 0.85,
+  "reasoning": "Network topology or performance metrics indicate suboptimal routing paths"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 49
+Connections: 20
+CPU Usage: 68.1%
+Memory Usage: 65.4%
+Latency P95: 85.0ms
+Throughput: 642.9 msg/s
+Error Rate: 0.030
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "load_balancing",
+  "parameters": {
+    "strategy": "adaptive_weighted",
+    "rebalance_threshold": 0.7,
+    "consider_node_capacity": true
+  },
+  "confidence": 0.9,
+  "reasoning": "Uneven load distribution detected across network nodes"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 52
+Connections: 15
+CPU Usage: 49.5%
+Memory Usage: 62.6%
+Latency P95: 80.7ms
+Throughput: 587.5 msg/s
+Error Rate: 0.016
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 49
+Connections: 11
+CPU Usage: 61.4%
+Memory Usage: 60.7%
+Latency P95: 70.5ms
+Throughput: 601.0 msg/s
+Error Rate: 0.360
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7999999999999999,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 48
+Connections: 15
+CPU Usage: 72.7%
+Memory Usage: 96.5%
+Latency P95: 105.5ms
+Throughput: 230.0 msg/s
+Error Rate: 0.082
+Security Alerts: 2
+Threat Level: high
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "security_response",
+  "parameters": {
+    "response_level": "medium",
+    "enable_filtering": true,
+    "quarantine_suspicious": true,
+    "alert_administrators": true
+  },
+  "confidence": 0.95,
+  "reasoning": "Security threat detected requiring immediate response"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 47
+Connections: 15
+CPU Usage: 69.7%
+Memory Usage: 53.8%
+Latency P95: 58.4ms
+Throughput: 792.8 msg/s
+Error Rate: 0.011
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 51
+Connections: 15
+CPU Usage: 83.2%
+Memory Usage: 55.6%
+Latency P95: 97.3ms
+Throughput: 578.9 msg/s
+Error Rate: 0.050
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "load_balancing",
+  "parameters": {
+    "strategy": "adaptive_weighted",
+    "rebalance_threshold": 0.7,
+    "consider_node_capacity": true
+  },
+  "confidence": 0.9,
+  "reasoning": "Uneven load distribution detected across network nodes"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 55
+Connections: 15
+CPU Usage: 62.6%
+Memory Usage: 43.9%
+Latency P95: 30.8ms
+Throughput: 378.3 msg/s
+Error Rate: 0.006
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "monitor",
+  "parameters": {
+    "continue_monitoring": true
+  },
+  "confidence": 0.7,
+  "reasoning": "Network state is stable, continue monitoring"
+}"""
+
+MESSAGE user """NETWORK STATUS:
+Nodes: 78
+Connections: 15
+CPU Usage: 56.6%
+Memory Usage: 46.3%
+Latency P95: 67.2ms
+Throughput: 583.0 msg/s
+Error Rate: 0.063
+Security Alerts: 0
+Threat Level: low
+
+What action should be taken?"""
+MESSAGE assistant """{
+  "action": "resource_scaling",
+  "parameters": {
+    "scale_direction": "up",
+    "scale_factor": 1.2,
+    "components": [
+      "connections",
+      "bandwidth"
+    ]
+  },
+  "confidence": 0.8,
+  "reasoning": "Resource utilization approaching capacity limits"
+}"""
+

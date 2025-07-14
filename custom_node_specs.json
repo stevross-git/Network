@@ -1,0 +1,122 @@
+[
+  {
+    "name": "gateway_node_1",
+    "type": "super_peer",
+    "config": {
+      "p2p": {
+        "max_connections": 300,
+        "enable_upnp": true,
+        "enable_nat_traversal": true
+      },
+      "mesh": {
+        "topology_type": "hierarchical",
+        "max_peers": 150,
+        "is_super_peer": true
+      },
+      "capabilities": {
+        "relay": true,
+        "storage": true,
+        "compute": true,
+        "quantum": false
+      }
+    }
+  },
+  {
+    "name": "edge_sensor_1",
+    "type": "edge",
+    "config": {
+      "p2p": {
+        "max_connections": 10,
+        "enable_upnp": false
+      },
+      "mesh": {
+        "topology_type": "partial_mesh",
+        "max_peers": 5
+      },
+      "capabilities": {
+        "relay": false,
+        "storage": false,
+        "compute": false,
+        "quantum": false
+      },
+      "performance": {
+        "max_message_size": 65536,
+        "gossip_interval": 30
+      }
+    }
+  },
+  {
+    "name": "storage_cluster_1",
+    "type": "storage",
+    "config": {
+      "p2p": {
+        "max_connections": 100,
+        "enable_upnp": true
+      },
+      "mesh": {
+        "topology_type": "dynamic_partial",
+        "max_peers": 50
+      },
+      "capabilities": {
+        "relay": true,
+        "storage": true,
+        "compute": false,
+        "quantum": false
+      },
+      "performance": {
+        "max_message_size": 10485760,
+        "gossip_interval": 3
+      }
+    }
+  },
+  {
+    "name": "compute_cluster_1",
+    "type": "compute",
+    "config": {
+      "p2p": {
+        "max_connections": 75,
+        "enable_upnp": true
+      },
+      "mesh": {
+        "topology_type": "small_world",
+        "max_peers": 40
+      },
+      "capabilities": {
+        "relay": true,
+        "storage": false,
+        "compute": true,
+        "quantum": false
+      },
+      "performance": {
+        "max_message_size": 5242880,
+        "gossip_interval": 2
+      }
+    }
+  },
+  {
+    "name": "mobile_relay_1",
+    "type": "relay",
+    "config": {
+      "p2p": {
+        "max_connections": 30,
+        "enable_upnp": true,
+        "enable_nat_traversal": true,
+        "connection_timeout": 60
+      },
+      "mesh": {
+        "topology_type": "adaptive_partial",
+        "max_peers": 20
+      },
+      "capabilities": {
+        "relay": true,
+        "storage": false,
+        "compute": false,
+        "quantum": false
+      },
+      "performance": {
+        "gossip_interval": 10,
+        "heartbeat_interval": 60
+      }
+    }
+  }
+]

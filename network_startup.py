@@ -69,6 +69,8 @@ except ImportError as e:
 logger = None
 
 
+
+
 class GenesisNetworkConnector:
     """Handles connection to genesis server and network management."""
     
